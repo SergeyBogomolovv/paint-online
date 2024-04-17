@@ -1,25 +1,13 @@
-import { Navigate, Route, Routes } from 'react-router'
-import Canvas from './components/canvas'
-import Settings from './components/settings'
-import Toolbar from './components/toolbar'
+import { Route, Routes } from 'react-router'
+import MainPage from './pages/main'
+import EnterPage from './pages/enter'
 
 function App() {
   return (
-    <div>
-      <Routes>
-        <Route
-          path='/:id'
-          element={
-            <>
-              <Toolbar />
-              <Settings />
-              <Canvas />
-            </>
-          }
-        />
-        <Route path='/' element={<Navigate to={`/f${+new Date()}`} />} />
-      </Routes>
-    </div>
+    <Routes>
+      <Route path='/:id' element={<MainPage />} />
+      <Route path='/' element={<EnterPage />} />
+    </Routes>
   )
 }
 

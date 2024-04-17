@@ -10,7 +10,7 @@ interface CanvasState {
 }
 
 const initialState: CanvasState = {
-  username: '',
+  username: 'Gerax',
   canvas: null,
   undoList: [],
   redoList: [],

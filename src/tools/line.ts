@@ -1,4 +1,4 @@
-import Tool from './canvas'
+import Tool from './tool'
 
 export default class Line extends Tool {
   name: string

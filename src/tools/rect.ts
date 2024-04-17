@@ -1,5 +1,7 @@
-import Tool from './canvas'
-
+import { Message } from '@/interfaces/message'
+import Tool from './tool'
+import { Rect as IRect } from '@/interfaces/rect'
+import { Figures } from '@/interfaces/figure'
 export default class Rect extends Tool {
   startX: number
   startY: number
@@ -22,20 +24,19 @@ export default class Rect extends Tool {
   }
   mouseUpHandler() {
     this.mouseDown = false
-    this.socket.send(
-      JSON.stringify({
-        method: 'draw',
-        id: this.id,
-        figure: {
-          type: 'rect',
-          x: this.startX,
-          y: this.startY,
-          width: this.width,
-          heigth: this.heigth,
-          color: this.ctx?.fillStyle,
-        },
-      })
-    )
+    const message: Message<IRect> = {
+      method: 'draw',
+      id: this.id,
+      figure: {
+        type: Figures.rect,
+        x: this.startX,
+        y: this.startY,
+        width: this.width,
+        heigth: this.heigth,
+        color: this.ctx?.fillStyle,
+      },
+    }
+    this.socket.send(JSON.stringify(message))
   }
   mouseDownHandler(e: any) {
     this.mouseDown = true
@@ -65,18 +66,19 @@ export default class Rect extends Tool {
       this.ctx?.stroke()
     }
   }
-  static drawRect(
-    ctx: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-    color: string
-  ) {
-    ctx.fillStyle = color
-    ctx?.beginPath()
-    ctx?.rect(x, y, w, h)
-    ctx?.fill()
-    ctx?.stroke()
+  static drawRect(args: DrawRectArgs) {
+    args.ctx.fillStyle = args.color
+    args.ctx?.beginPath()
+    args.ctx?.rect(args.x, args.y, args.w, args.h)
+    args.ctx?.fill()
+    args.ctx?.stroke()
   }
+}
+export interface DrawRectArgs {
+  ctx: CanvasRenderingContext2D
+  x: number
+  y: number
+  w: number
+  h: number
+  color: string
 }

@@ -1,4 +1,7 @@
-import Tool from './canvas'
+import { Message } from '@/interfaces/message'
+import Tool from './tool'
+import { Brush as IBrush } from '@/interfaces/brush'
+import { Figures } from '@/interfaces/figure'
 
 export default class Brush extends Tool {
   constructor(canvas: HTMLCanvasElement, socket: WebSocket, id: string) {
@@ -12,15 +15,14 @@ export default class Brush extends Tool {
   }
   mouseUpHandler() {
     this.mouseDown = false
-    this.socket.send(
-      JSON.stringify({
-        method: 'draw',
-        id: this.id,
-        figure: {
-          type: 'finish',
-        },
-      })
-    )
+    const message: Message<any> = {
+      method: 'draw',
+      id: this.id,
+      figure: {
+        type: 'finish',
+      },
+    }
+    this.socket.send(JSON.stringify(message))
   }
   mouseDownHandler(e: any) {
     this.mouseDown = true
@@ -32,29 +34,28 @@ export default class Brush extends Tool {
   }
   mouseMoveHandler(e: any) {
     if (this.mouseDown) {
-      this.socket.send(
-        JSON.stringify({
-          method: 'draw',
-          id: this.id,
-          figure: {
-            type: 'brush',
-            x: e.pageX - e.target.offsetLeft,
-            y: e.pageY - e.target.offsetTop,
-            color: this.ctx?.fillStyle,
-          },
-        })
-      )
+      const message: Message<IBrush> = {
+        method: 'draw',
+        id: this.id,
+        figure: {
+          type: Figures.brush,
+          x: e.pageX - e.target.offsetLeft,
+          y: e.pageY - e.target.offsetTop,
+          color: this.ctx?.fillStyle,
+        },
+      }
+      this.socket.send(JSON.stringify(message))
     }
   }
-
-  static draw(
-    ctx: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    color: string
-  ) {
-    ctx.fillStyle = color
-    ctx?.lineTo(x, y)
-    ctx?.stroke()
+  static draw(args: DrawArgs) {
+    args.ctx.fillStyle = args.color
+    args.ctx?.lineTo(args.x, args.y)
+    args.ctx?.stroke()
   }
+}
+interface DrawArgs {
+  ctx: CanvasRenderingContext2D
+  x: number
+  y: number
+  color: string
 }

@@ -1,5 +1,5 @@
-import { useAppDispatch } from '../store/hooks'
-import { setLineWidth } from '../store/slices/tool-slice'
+import { useAppDispatch } from '@/hooks/redux'
+import { setLineWidth } from '@/redux/slices/tool-slice'
 
 export default function Settings() {
   const dispatch = useAppDispatch()

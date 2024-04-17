@@ -6,18 +6,18 @@ import { IoPencilOutline } from 'react-icons/io5'
 import { RiArrowGoBackFill } from 'react-icons/ri'
 import { RiArrowGoForwardFill } from 'react-icons/ri'
 import { FaRegSave } from 'react-icons/fa'
-import { useAppDispatch, useAppSelector } from '../store/hooks'
+import { useAppDispatch, useAppSelector } from '@/hooks/redux'
 import {
   setFillColor,
   setStrokeColor,
   setTool,
-} from '../store/slices/tool-slice'
-import Brush from '../tools/brush'
-import Rect from '../tools/rect'
-import Circle from '../tools/circle'
-import Eraser from '../tools/eraser'
-import Line from '../tools/line'
-import { redo, undo } from '../store/slices/canvas-slice'
+} from '@/redux/slices/tool-slice'
+import Brush from '@/tools/brush'
+import Rect from '@/tools/rect'
+import Circle from '@/tools/circle'
+import Eraser from '@/tools/eraser'
+import Line from '@/tools/line'
+import { redo, undo } from '@/redux/slices/canvas-slice'
 
 export default function Toolbar() {
   const dispatch = useAppDispatch()
