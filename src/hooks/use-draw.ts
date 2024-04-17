@@ -12,7 +12,7 @@ export const useDraw = () => {
       case 'brush':
         Brush.draw({
           color: figure.color,
-          ctx: figure.ctx,
+          ctx: ctx!,
           y: figure.y,
           x: figure.x,
         })
@@ -20,7 +20,7 @@ export const useDraw = () => {
       case 'rect':
         Rect.drawRect({
           color: figure.color,
-          ctx: figure.ctx,
+          ctx: ctx!,
           y: figure.y,
           x: figure.x,
           h: figure.width,

@@ -49,8 +49,8 @@ export default class Brush extends Tool {
   }
   static draw(args: DrawArgs) {
     args.ctx.fillStyle = args.color
-    args.ctx?.lineTo(args.x, args.y)
-    args.ctx?.stroke()
+    args.ctx.lineTo(args.x, args.y)
+    args.ctx.stroke()
   }
 }
 interface DrawArgs {
