@@ -68,17 +68,17 @@ export default class Rect extends Tool {
   }
   static drawRect(args: DrawRectArgs) {
     args.ctx.fillStyle = args.color
-    args.ctx?.beginPath()
-    args.ctx?.rect(args.x, args.y, args.w, args.h)
-    args.ctx?.fill()
-    args.ctx?.stroke()
+    args.ctx.beginPath()
+    args.ctx.rect(args.x, args.y, args.width, args.heigth)
+    args.ctx.fill()
+    args.ctx.stroke()
   }
 }
 export interface DrawRectArgs {
   ctx: CanvasRenderingContext2D
   x: number
   y: number
-  w: number
-  h: number
+  width: number
+  heigth: number
   color: string
 }

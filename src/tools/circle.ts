@@ -1,14 +1,18 @@
+import { Message } from '@/interfaces/message'
 import Tool from './tool'
-
+import { Figures } from '@/interfaces/figure'
+import { Circle as ICircle } from '@/interfaces/circle'
 export default class Circle extends Tool {
   startX: number
   startY: number
   saved: string
-  constructor(canvas: HTMLCanvasElement) {
-    super(canvas)
+  radius: number
+  constructor(canvas: HTMLCanvasElement, socket: WebSocket, id: string) {
+    super(canvas, socket, id)
     this.startX = 0
     this.startY = 0
     this.saved = ''
+    this.radius = 0
     this.listen()
   }
 
@@ -29,6 +33,18 @@ export default class Circle extends Tool {
 
   mouseUpHandler() {
     this.mouseDown = false
+    const message: Message<ICircle> = {
+      method: 'draw',
+      id: this.id,
+      figure: {
+        type: Figures.circle,
+        x: this.startX,
+        y: this.startY,
+        color: this.ctx?.fillStyle,
+        radius: this.radius,
+      },
+    }
+    this.socket.send(JSON.stringify(message))
   }
 
   mouseMoveHandler(e: any) {
@@ -37,8 +53,8 @@ export default class Circle extends Tool {
       let curentY = e.pageY - e.target.offsetTop
       let width = curentX - this.startX
       let height = curentY - this.startY
-      let r = Math.sqrt(width ** 2 + height ** 2)
-      this.draw(this.startX, this.startY, r)
+      this.radius = Math.sqrt(width ** 2 + height ** 2)
+      this.draw(this.startX, this.startY, this.radius)
     }
   }
 
@@ -54,4 +70,20 @@ export default class Circle extends Tool {
       this.ctx?.stroke()
     }
   }
+
+  static drawCircle(args: DrawCircleArgs) {
+    args.ctx.fillStyle = args.color
+    args.ctx.beginPath()
+    args.ctx.arc(args.x, args.y, args.radius, 0, 2 * Math.PI)
+    args.ctx.fill()
+    args.ctx.stroke()
+  }
+}
+
+export interface DrawCircleArgs {
+  ctx: CanvasRenderingContext2D
+  x: number
+  y: number
+  radius: number
+  color: string
 }

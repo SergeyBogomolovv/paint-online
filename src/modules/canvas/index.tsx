@@ -23,7 +23,7 @@ export default function Canvas() {
   useEffect(() => {
     if (canvas && username) {
       const socket = new WebSocket(`ws://localhost:5174/`)
-      dispatch(setTool(new Brush(canvasRef.current!, socket, sessionId!)))
+      dispatch(setTool(new Brush(canvas, socket, sessionId!)))
       dispatch(setSocket(socket))
       onSocketOpen(socket, sessionId!, username)
       onMessage(socket, draw)

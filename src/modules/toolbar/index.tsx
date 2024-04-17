@@ -50,7 +50,7 @@ export default function Toolbar() {
         </button>
         <button
           onClick={() => {
-            dispatch(setTool(new Circle(canvas!)))
+            dispatch(setTool(new Circle(canvas!, socket!, sessionId!)))
           }}
         >
           <FaRegCircle className='w-6 h-6' />

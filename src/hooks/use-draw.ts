@@ -1,6 +1,7 @@
 import { useAppSelector } from '@/hooks/redux'
 import { Message } from '@/interfaces/message'
 import Brush from '@/tools/brush'
+import Circle from '@/tools/circle'
 import Rect from '@/tools/rect'
 
 export const useDraw = () => {
@@ -11,20 +12,20 @@ export const useDraw = () => {
     switch (figure.type) {
       case 'brush':
         Brush.draw({
-          color: figure.color,
           ctx: ctx!,
-          y: figure.y,
-          x: figure.x,
+          ...figure,
         })
         break
       case 'rect':
         Rect.drawRect({
-          color: figure.color,
+          ...figure,
           ctx: ctx!,
-          y: figure.y,
-          x: figure.x,
-          h: figure.width,
-          w: figure.width,
+        })
+        break
+      case 'circle':
+        Circle.drawCircle({
+          ctx: ctx!,
+          ...figure,
         })
         break
       case 'finish':
