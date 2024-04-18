@@ -17,7 +17,6 @@ export const toolSlice = createSlice({
     },
     setFillColor: (state, action: PayloadAction<string>) => {
       state.tool!.fillStyle = action.payload
-      console.log(state.tool?.fillStyle)
     },
     setStrokeColor: (state, action: PayloadAction<string>) => {
       state.tool!.strokeStyle = action.payload

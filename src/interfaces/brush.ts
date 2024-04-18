@@ -1,3 +1,3 @@
 import { Figure } from './figure'
 
-export interface Brush extends Figure {}
+export interface IBrush extends Figure {}

@@ -1,7 +1,5 @@
-import { Message } from '@/interfaces/message'
+import { Message, MessageFigures } from '@/interfaces/message'
 import Tool from './tool'
-import { Brush as IBrush } from '@/interfaces/brush'
-import { Figures } from '@/interfaces/figure'
 
 export default class Brush extends Tool {
   constructor(canvas: HTMLCanvasElement, socket: WebSocket, id: string) {
@@ -15,12 +13,11 @@ export default class Brush extends Tool {
   }
   mouseUpHandler() {
     this.mouseDown = false
-    const message: Message<any> = {
+    const message: Message = {
       method: 'draw',
       id: this.id,
-      figure: {
-        type: 'finish',
-      },
+      type: MessageFigures.finish,
+      figure: {},
     }
     this.socket.send(JSON.stringify(message))
   }
@@ -34,14 +31,15 @@ export default class Brush extends Tool {
   }
   mouseMoveHandler(e: any) {
     if (this.mouseDown) {
-      const message: Message<IBrush> = {
+      const message: Message = {
         method: 'draw',
         id: this.id,
+        type: MessageFigures.brush,
         figure: {
-          type: Figures.brush,
           x: e.pageX - e.target.offsetLeft,
           y: e.pageY - e.target.offsetTop,
-          color: this.ctx?.fillStyle,
+          color: this.ctx?.fillStyle.toString()!,
+          lineWidth: this.ctx?.lineWidth,
         },
       }
       this.socket.send(JSON.stringify(message))
@@ -49,6 +47,8 @@ export default class Brush extends Tool {
   }
   static draw(args: DrawArgs) {
     args.ctx.fillStyle = args.color
+    args.ctx.strokeStyle = args.color
+    args.ctx.lineWidth = args.lineWidth
     args.ctx.lineTo(args.x, args.y)
     args.ctx.stroke()
   }
@@ -58,4 +58,5 @@ interface DrawArgs {
   x: number
   y: number
   color: string
+  lineWidth: number
 }

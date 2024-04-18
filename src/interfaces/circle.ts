@@ -1,5 +1,5 @@
 import { Figure } from './figure'
 
-export interface Circle extends Figure {
+export interface ICircle extends Figure {
   radius: number
 }

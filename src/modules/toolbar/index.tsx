@@ -18,6 +18,8 @@ import Circle from '@/tools/circle'
 import Eraser from '@/tools/eraser'
 import Line from '@/tools/line'
 import { redo, undo } from '@/redux/slices/canvas-slice'
+import { FcInvite } from 'react-icons/fc'
+import { toast } from 'sonner'
 
 export default function Toolbar() {
   const dispatch = useAppDispatch()
@@ -57,14 +59,14 @@ export default function Toolbar() {
         </button>
         <button
           onClick={() => {
-            dispatch(setTool(new Eraser(canvas!)))
+            dispatch(setTool(new Eraser(canvas!, socket!, sessionId!)))
           }}
         >
           <FaEraser className='w-6 h-6' />
         </button>
         <button
           onClick={() => {
-            dispatch(setTool(new Line(canvas!)))
+            dispatch(setTool(new Line(canvas!, socket!, sessionId!)))
           }}
         >
           <IoPencilOutline className='w-6 h-6' />
@@ -94,6 +96,14 @@ export default function Toolbar() {
         </button>
         <button onClick={download}>
           <FaRegSave className='w-6 h-6' />
+        </button>
+        <button
+          onClick={async () => {
+            await navigator.clipboard.writeText(sessionId!)
+            toast.success('Ключ доски скопирован в буфер обмена')
+          }}
+        >
+          <FcInvite className='w-6 h-6' />
         </button>
       </div>
     </div>

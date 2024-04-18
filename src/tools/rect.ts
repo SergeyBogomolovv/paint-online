@@ -1,7 +1,5 @@
-import { Message } from '@/interfaces/message'
+import { Message, MessageFigures } from '@/interfaces/message'
 import Tool from './tool'
-import { Rect as IRect } from '@/interfaces/rect'
-import { Figures } from '@/interfaces/figure'
 export default class Rect extends Tool {
   startX: number
   startY: number
@@ -24,19 +22,26 @@ export default class Rect extends Tool {
   }
   mouseUpHandler() {
     this.mouseDown = false
-    const message: Message<IRect> = {
+    const message: Message = {
       method: 'draw',
       id: this.id,
+      type: MessageFigures.rect,
       figure: {
-        type: Figures.rect,
         x: this.startX,
         y: this.startY,
         width: this.width,
         heigth: this.heigth,
-        color: this.ctx?.fillStyle,
+        color: this.ctx?.fillStyle.toString()!,
       },
     }
+    const finish: Message = {
+      method: 'draw',
+      id: this.id,
+      type: MessageFigures.finish,
+      figure: {},
+    }
     this.socket.send(JSON.stringify(message))
+    this.socket.send(JSON.stringify(finish))
   }
   mouseDownHandler(e: any) {
     this.mouseDown = true
@@ -68,12 +73,14 @@ export default class Rect extends Tool {
   }
   static drawRect(args: DrawRectArgs) {
     args.ctx.fillStyle = args.color
+    args.ctx.strokeStyle = args.color
     args.ctx.beginPath()
     args.ctx.rect(args.x, args.y, args.width, args.heigth)
     args.ctx.fill()
     args.ctx.stroke()
   }
 }
+
 export interface DrawRectArgs {
   ctx: CanvasRenderingContext2D
   x: number

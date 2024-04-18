@@ -1,7 +1,5 @@
-import { Message } from '@/interfaces/message'
+import { Message, MessageFigures } from '@/interfaces/message'
 import Tool from './tool'
-import { Figures } from '@/interfaces/figure'
-import { Circle as ICircle } from '@/interfaces/circle'
 export default class Circle extends Tool {
   startX: number
   startY: number
@@ -21,7 +19,6 @@ export default class Circle extends Tool {
     this.canvas.onmousedown = this.mouseDownHandler.bind(this)
     this.canvas.onmouseup = this.mouseUpHandler.bind(this)
   }
-
   mouseDownHandler(e: any) {
     this.mouseDown = true
     let canvasData = this.canvas.toDataURL()
@@ -30,23 +27,28 @@ export default class Circle extends Tool {
     this.startY = e.pageY - e.target.offsetTop
     this.saved = canvasData
   }
-
   mouseUpHandler() {
     this.mouseDown = false
-    const message: Message<ICircle> = {
+    const message: Message = {
       method: 'draw',
       id: this.id,
+      type: MessageFigures.circle,
       figure: {
-        type: Figures.circle,
         x: this.startX,
         y: this.startY,
-        color: this.ctx?.fillStyle,
+        color: this.ctx?.fillStyle.toString()!,
         radius: this.radius,
       },
     }
+    const finish: Message = {
+      method: 'draw',
+      id: this.id,
+      type: MessageFigures.finish,
+      figure: {},
+    }
     this.socket.send(JSON.stringify(message))
+    this.socket.send(JSON.stringify(finish))
   }
-
   mouseMoveHandler(e: any) {
     if (this.mouseDown) {
       let curentX = e.pageX - e.target.offsetLeft
@@ -57,7 +59,6 @@ export default class Circle extends Tool {
       this.draw(this.startX, this.startY, this.radius)
     }
   }
-
   draw(x: number, y: number, r: number) {
     const img = new Image()
     img.src = this.saved
@@ -70,9 +71,9 @@ export default class Circle extends Tool {
       this.ctx?.stroke()
     }
   }
-
   static drawCircle(args: DrawCircleArgs) {
     args.ctx.fillStyle = args.color
+    args.ctx.strokeStyle = args.color
     args.ctx.beginPath()
     args.ctx.arc(args.x, args.y, args.radius, 0, 2 * Math.PI)
     args.ctx.fill()
