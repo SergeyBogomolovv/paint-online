@@ -8,18 +8,18 @@ import {
 import { Slider } from '@/components/ui/slider'
 import { Button } from '@/components/ui/button'
 import { MdOutlineArrowDropDown } from 'react-icons/md'
-import { redo, undo } from '@/redux/slices/canvas-slice'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
 import { FaPersonCirclePlus } from 'react-icons/fa6'
 import { RiArrowGoBackFill } from 'react-icons/ri'
 import { RiArrowGoForwardFill } from 'react-icons/ri'
 import { FaRegSave } from 'react-icons/fa'
+import { ActionMessage } from '@/interfaces/undo-message'
 
 export default function Settings() {
   const dispatch = useAppDispatch()
   const { toolWidth } = useAppSelector((state) => state.tools)
-  const { canvas, sessionId } = useAppSelector((state) => state.canvas)
+  const { canvas, sessionId, socket } = useAppSelector((state) => state.canvas)
   const download = () => {
     const dataUrl = canvas?.toDataURL()
     const a = document.createElement('a')
@@ -29,13 +29,14 @@ export default function Settings() {
     a.click()
     document.body.removeChild(a)
   }
+
   return (
     <div className='flex justify-between py-4 w-[1500px] mx-auto'>
       <div className='flex items-center gap-2'>
         <Popover>
           <PopoverTrigger asChild>
             <Button variant={'outline'}>
-              Толщина линии: {toolWidth}{' '}
+              Толщина линии: {toolWidth}
               <MdOutlineArrowDropDown className='h-5 w-5 ml-2' />
             </Button>
           </PopoverTrigger>
@@ -56,7 +57,12 @@ export default function Settings() {
           className='bg-white rounded-2xl p-2'
           whileHover={{ scale: 1.2 }}
           onClick={() => {
-            dispatch(undo())
+            const message: ActionMessage = {
+              method: 'action',
+              type: 'undo',
+              id: sessionId!,
+            }
+            socket?.send(JSON.stringify(message))
           }}
         >
           <RiArrowGoBackFill className='w-6 h-6' />
@@ -65,7 +71,12 @@ export default function Settings() {
           className='bg-white rounded-2xl p-2'
           whileHover={{ scale: 1.2 }}
           onClick={() => {
-            dispatch(redo())
+            const message: ActionMessage = {
+              method: 'action',
+              type: 'redo',
+              id: sessionId!,
+            }
+            socket?.send(JSON.stringify(message))
           }}
         >
           <RiArrowGoForwardFill className='w-6 h-6' />

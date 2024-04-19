@@ -1,5 +1,6 @@
-export interface UndoMessage {
+export interface ActionMessage {
   id: string
-  data: string
-  method: 'undo'
+  data?: string
+  type: 'save' | 'undo' | 'redo'
+  method: 'action'
 }

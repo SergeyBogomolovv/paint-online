@@ -13,6 +13,7 @@ export default class Tool {
     this.socket = socket
     this.id = id
   }
+
   set fillStyle(color: string) {
     this.ctx!.fillStyle = color
   }
