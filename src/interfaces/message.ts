@@ -1,5 +1,5 @@
 export interface Message {
-  method: 'draw' | 'connection'
+  method: 'draw' | 'connection' | 'undo'
   id: string
   figure: any
   type: MessageFigures

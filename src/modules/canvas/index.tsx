@@ -3,10 +3,8 @@ import { useAppDispatch, useAppSelector } from '@/hooks/redux'
 import { pushToUndo, setCanvas, setSocket } from '@/redux/slices/canvas-slice'
 import Brush from '@/tools/brush'
 import { setTool } from '@/redux/slices/tool-slice'
-import { useDraw } from '@/hooks/use-draw'
 import { Navigate } from 'react-router'
-import { onSocketOpen } from './actions/on-open'
-import { onMessage } from './actions/on-message'
+import { useSocketConnection } from '@/hooks/use-socket-connection'
 
 export default function Canvas() {
   const canvasRef: Ref<HTMLCanvasElement> = useRef(null)
@@ -14,7 +12,7 @@ export default function Canvas() {
     (state) => state.canvas
   )
   const dispatch = useAppDispatch()
-  const draw = useDraw()
+  const { onMessage, onOpen } = useSocketConnection()
 
   useEffect(() => {
     dispatch(setCanvas(canvasRef.current))
@@ -25,8 +23,8 @@ export default function Canvas() {
       const socket = new WebSocket(`ws://localhost:5174/`)
       dispatch(setTool(new Brush(canvas, socket, sessionId!)))
       dispatch(setSocket(socket))
-      onSocketOpen(socket, sessionId!, username)
-      onMessage(socket, draw)
+      onMessage(socket)
+      onOpen(socket)
     }
   }, [username, canvas])
 
