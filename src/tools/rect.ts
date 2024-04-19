@@ -1,5 +1,6 @@
-import { Message, MessageFigures } from '@/interfaces/message'
+import { DrawMessage, MessageFigures } from '@/interfaces/draw-message'
 import Tool from './tool'
+import { FinishMessage } from '@/interfaces/finish-message'
 export default class Rect extends Tool {
   startX: number
   startY: number
@@ -22,7 +23,7 @@ export default class Rect extends Tool {
   }
   mouseUpHandler() {
     this.mouseDown = false
-    const message: Message = {
+    const message: DrawMessage = {
       method: 'draw',
       id: this.id,
       type: MessageFigures.rect,
@@ -34,11 +35,9 @@ export default class Rect extends Tool {
         color: this.ctx?.fillStyle.toString()!,
       },
     }
-    const finish: Message = {
-      method: 'draw',
+    const finish: FinishMessage = {
+      method: 'finish',
       id: this.id,
-      type: MessageFigures.finish,
-      figure: {},
     }
     this.socket.send(JSON.stringify(message))
     this.socket.send(JSON.stringify(finish))

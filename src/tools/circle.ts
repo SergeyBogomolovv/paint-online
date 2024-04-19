@@ -1,5 +1,6 @@
-import { Message, MessageFigures } from '@/interfaces/message'
+import { DrawMessage, MessageFigures } from '@/interfaces/draw-message'
 import Tool from './tool'
+import { FinishMessage } from '@/interfaces/finish-message'
 export default class Circle extends Tool {
   startX: number
   startY: number
@@ -29,7 +30,7 @@ export default class Circle extends Tool {
   }
   mouseUpHandler() {
     this.mouseDown = false
-    const message: Message = {
+    const message: DrawMessage = {
       method: 'draw',
       id: this.id,
       type: MessageFigures.circle,
@@ -40,11 +41,9 @@ export default class Circle extends Tool {
         radius: this.radius,
       },
     }
-    const finish: Message = {
-      method: 'draw',
+    const finish: FinishMessage = {
+      method: 'finish',
       id: this.id,
-      type: MessageFigures.finish,
-      figure: {},
     }
     this.socket.send(JSON.stringify(message))
     this.socket.send(JSON.stringify(finish))

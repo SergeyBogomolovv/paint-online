@@ -1,5 +1,6 @@
-import { Message, MessageFigures } from '@/interfaces/message'
+import { DrawMessage, MessageFigures } from '@/interfaces/draw-message'
 import Tool from './tool'
+import { FinishMessage } from '@/interfaces/finish-message'
 
 export default class Brush extends Tool {
   constructor(canvas: HTMLCanvasElement, socket: WebSocket, id: string) {
@@ -13,11 +14,9 @@ export default class Brush extends Tool {
   }
   mouseUpHandler() {
     this.mouseDown = false
-    const message: Message = {
-      method: 'draw',
+    const message: FinishMessage = {
+      method: 'finish',
       id: this.id,
-      type: MessageFigures.finish,
-      figure: {},
     }
     this.socket.send(JSON.stringify(message))
   }
@@ -31,7 +30,7 @@ export default class Brush extends Tool {
   }
   mouseMoveHandler(e: any) {
     if (this.mouseDown) {
-      const message: Message = {
+      const message: DrawMessage = {
         method: 'draw',
         id: this.id,
         type: MessageFigures.brush,
@@ -39,7 +38,7 @@ export default class Brush extends Tool {
           x: e.pageX - e.target.offsetLeft,
           y: e.pageY - e.target.offsetTop,
           color: this.ctx?.fillStyle.toString()!,
-          lineWidth: this.ctx?.lineWidth,
+          lineWidth: this.ctx?.lineWidth!,
         },
       }
       this.socket.send(JSON.stringify(message))

@@ -1,8 +1,8 @@
 import { useAppSelector } from '@/hooks/redux'
 import { IBrush } from '@/interfaces/brush'
 import { ICircle } from '@/interfaces/circle'
+import { DrawMessage, MessageFigures } from '@/interfaces/draw-message'
 import { ILine } from '@/interfaces/line'
-import { Message, MessageFigures } from '@/interfaces/message'
 import { IRect } from '@/interfaces/rect'
 import Brush from '@/tools/brush'
 import Circle from '@/tools/circle'
@@ -12,13 +12,17 @@ import Rect from '@/tools/rect'
 
 export const useDraw = () => {
   const { canvas } = useAppSelector((state) => state.canvas)
-  const draw = (msg: Message) => {
-    let ctx = canvas!.getContext('2d')
+  const finish = () => {
+    const ctx = canvas!.getContext('2d')
+    ctx?.beginPath()
+  }
+  const draw = (msg: DrawMessage) => {
+    const ctx = canvas!.getContext('2d')
     const prevColor = canvas!.getContext('2d')?.fillStyle
     const prevlineWidth = canvas!.getContext('2d')?.lineWidth
     switch (msg.type) {
       case MessageFigures.brush:
-        const brush: IBrush = msg.figure
+        const brush = msg.figure as IBrush
         Brush.draw({
           ctx: ctx!,
           ...brush,
@@ -29,7 +33,7 @@ export const useDraw = () => {
         ctx!.strokeStyle = prevColor!
         break
       case MessageFigures.rect:
-        const rect: IRect = msg.figure
+        const rect = msg.figure as IRect
         Rect.drawRect({
           ctx: ctx!,
           ...rect,
@@ -39,7 +43,7 @@ export const useDraw = () => {
         ctx!.strokeStyle = prevColor!
         break
       case MessageFigures.circle:
-        const circle: ICircle = msg.figure
+        const circle = msg.figure as ICircle
         Circle.drawCircle({
           ctx: ctx!,
           ...circle,
@@ -49,7 +53,7 @@ export const useDraw = () => {
         ctx!.strokeStyle = prevColor!
         break
       case MessageFigures.eraser:
-        const eraser: IBrush = msg.figure
+        const eraser = msg.figure as IBrush
         Eraser.erase({
           ctx: ctx!,
           ...eraser,
@@ -59,16 +63,13 @@ export const useDraw = () => {
         ctx!.strokeStyle = prevColor!
         break
       case MessageFigures.line:
-        const line: ILine = msg.figure
+        const line = msg.figure as ILine
         Line.drawLine({ ctx: ctx!, ...line })
         ctx!.lineWidth = prevlineWidth!
         ctx!.fillStyle = prevColor!
         ctx!.strokeStyle = prevColor!
         break
-      case MessageFigures.finish:
-        ctx?.beginPath()
-        break
     }
   }
-  return draw
+  return { draw, finish }
 }
