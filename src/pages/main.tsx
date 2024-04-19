@@ -4,10 +4,12 @@ import Toolbar from '@/modules/toolbar'
 
 export default function MainPage() {
   return (
-    <div>
-      <Toolbar />
+    <div className='bg-stone-800 min-h-[100svh] flex flex-col'>
       <Settings />
-      <Canvas />
+      <div className='flex mt-8'>
+        <Toolbar />
+        <Canvas />
+      </div>
     </div>
   )
 }

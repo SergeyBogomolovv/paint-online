@@ -2,10 +2,7 @@ import { FaPen } from 'react-icons/fa'
 import { FaSquare } from 'react-icons/fa'
 import { FaRegCircle } from 'react-icons/fa'
 import { FaEraser } from 'react-icons/fa'
-import { IoPencilOutline } from 'react-icons/io5'
-import { RiArrowGoBackFill } from 'react-icons/ri'
-import { RiArrowGoForwardFill } from 'react-icons/ri'
-import { FaRegSave } from 'react-icons/fa'
+
 import { useAppDispatch, useAppSelector } from '@/hooks/redux'
 import {
   setFillColor,
@@ -17,94 +14,51 @@ import Rect from '@/tools/rect'
 import Circle from '@/tools/circle'
 import Eraser from '@/tools/eraser'
 import Line from '@/tools/line'
-import { redo, undo } from '@/redux/slices/canvas-slice'
-import { FcInvite } from 'react-icons/fc'
-import { toast } from 'sonner'
+
+import { cn } from '@/lib/utils'
+import { ColorPicker } from 'antd'
+import { motion } from 'framer-motion'
+import { IoRemoveOutline } from 'react-icons/io5'
 
 export default function Toolbar() {
   const dispatch = useAppDispatch()
   const { canvas, socket, sessionId } = useAppSelector((state) => state.canvas)
-  const download = () => {
-    const dataUrl = canvas?.toDataURL()
-    const a = document.createElement('a')
-    a.href = dataUrl!
-    a.download = sessionId + '.jpg'
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-  }
+  const { tool } = useAppSelector((state) => state.tools)
+
+  const tools = [
+    { icon: FaPen, thisTool: Brush },
+    { icon: FaSquare, thisTool: Rect },
+    { icon: FaRegCircle, thisTool: Circle },
+    { icon: FaEraser, thisTool: Eraser },
+    { icon: IoRemoveOutline, thisTool: Line },
+  ]
+
   return (
-    <div className='py-4 px-20 flex justify-between items-center border border-neutral-500'>
-      <div className='flex items-center gap-4'>
-        <button
-          onClick={() => {
-            dispatch(setTool(new Brush(canvas!, socket!, sessionId!)))
-          }}
-        >
-          <FaPen className='w-6 h-6' />
-        </button>
-        <button
-          onClick={() => {
-            dispatch(setTool(new Rect(canvas!, socket!, sessionId!)))
-          }}
-        >
-          <FaSquare className='w-6 h-6' />
-        </button>
-        <button
-          onClick={() => {
-            dispatch(setTool(new Circle(canvas!, socket!, sessionId!)))
-          }}
-        >
-          <FaRegCircle className='w-6 h-6' />
-        </button>
-        <button
-          onClick={() => {
-            dispatch(setTool(new Eraser(canvas!, socket!, sessionId!)))
-          }}
-        >
-          <FaEraser className='w-6 h-6' />
-        </button>
-        <button
-          onClick={() => {
-            dispatch(setTool(new Line(canvas!, socket!, sessionId!)))
-          }}
-        >
-          <IoPencilOutline className='w-6 h-6' />
-        </button>
-        <input
-          type='color'
-          onChange={(e) => {
-            dispatch(setStrokeColor(e.target.value))
-            dispatch(setFillColor(e.target.value))
+    <div className='flex flex-col h-full fixed pl-6 text-neutral-400'>
+      <div className='flex flex-col items-center gap-4'>
+        {tools.map((t) => (
+          <motion.button
+            key={t.thisTool.name}
+            whileHover={{ scale: 1.2 }}
+            onClick={() => {
+              dispatch(setTool(new t.thisTool(canvas!, socket!, sessionId!)))
+            }}
+          >
+            <t.icon
+              className={cn(
+                'w-6 h-6',
+                tool instanceof t.thisTool && 'text-white'
+              )}
+            />
+          </motion.button>
+        ))}
+        <ColorPicker
+          defaultValue={'#000'}
+          onChangeComplete={(color) => {
+            dispatch(setStrokeColor(color.toRgbString()))
+            dispatch(setFillColor(color.toRgbString()))
           }}
         />
-      </div>
-      <div className='flex items-center gap-4'>
-        <button
-          onClick={() => {
-            dispatch(undo())
-          }}
-        >
-          <RiArrowGoBackFill className='w-6 h-6' />
-        </button>
-        <button
-          onClick={() => {
-            dispatch(redo())
-          }}
-        >
-          <RiArrowGoForwardFill className='w-6 h-6' />
-        </button>
-        <button onClick={download}>
-          <FaRegSave className='w-6 h-6' />
-        </button>
-        <button
-          onClick={async () => {
-            await navigator.clipboard.writeText(sessionId!)
-            toast.success('Ключ доски скопирован в буфер обмена')
-          }}
-        >
-          <FcInvite className='w-6 h-6' />
-        </button>
       </div>
     </div>
   )

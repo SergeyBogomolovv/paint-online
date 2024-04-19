@@ -33,17 +33,15 @@ export default function Canvas() {
   return (
     <>
       {username && sessionId ? (
-        <div className='container mx-auto'>
-          <canvas
-            onMouseDown={() => {
-              dispatch(pushToUndo(canvasRef.current!.toDataURL()))
-            }}
-            className='mx-auto bg-blue-100'
-            ref={canvasRef}
-            width={1280}
-            height={700}
-          />
-        </div>
+        <canvas
+          onMouseDown={() => {
+            dispatch(pushToUndo(canvasRef.current!.toDataURL()))
+          }}
+          className='mx-auto bg-white rounded-lg '
+          ref={canvasRef}
+          width={1500}
+          height={750}
+        />
       ) : (
         <Navigate to={'/'} />
       )}

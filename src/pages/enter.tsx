@@ -6,7 +6,7 @@ export default function EnterPage() {
   return (
     <div className='flex items-center flex-col justify-center gap-y-10 h-[100svh] bg-blue-500'>
       <h1 className='text-6xl font-extrabold text-white'>
-        Welcome to Paint Online!
+        Добро пожаловать в Paint Online!
       </h1>
       <Tabs defaultValue='create' className='w-[600px]'>
         <TabsList className='w-full'>

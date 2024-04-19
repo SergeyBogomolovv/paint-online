@@ -46,8 +46,8 @@ export default class Eraser extends Tool {
     }
   }
   static erase(args: EraseArgs) {
-    args.ctx.fillStyle = 'rgb(219 234 254)'
-    args.ctx.strokeStyle = 'rgb(219 234 254)'
+    args.ctx.fillStyle = 'white'
+    args.ctx.strokeStyle = 'white'
     args.ctx.lineWidth = args.lineWidth
     args.ctx.lineTo(args.x, args.y)
     args.ctx.stroke()

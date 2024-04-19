@@ -22,6 +22,9 @@ export default class Tool {
   set lineWidth(width: number) {
     this.ctx!.lineWidth = width
   }
+  get lineWidth() {
+    return this.ctx!.lineWidth
+  }
   destroyEvents() {
     this.canvas.onmousedown = null
     this.canvas.onmousemove = null
