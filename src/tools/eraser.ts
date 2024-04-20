@@ -25,6 +25,8 @@ export default class Eraser extends Tool {
     this.mouseDown = true
     this.ctx?.beginPath()
     this.ctx?.moveTo(offsetX, offsetY)
+    this.ctx?.lineTo(offsetX, offsetY)
+    this.ctx?.stroke()
   }
   mouseMoveHandler(e: MouseEvent) {
     if (this.mouseDown) {

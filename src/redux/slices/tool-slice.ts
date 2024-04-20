@@ -19,6 +19,7 @@ export const toolSlice = createSlice({
     setTool: (state, action: PayloadAction<any>) => {
       state.tool = action.payload
       state.toolWidth = state.tool!.lineWidth
+      state.tool!.lineCap = 'round'
       state.toolLineCap = state.tool!.lineCap
     },
     setFillColor: (state, action: PayloadAction<string>) => {
