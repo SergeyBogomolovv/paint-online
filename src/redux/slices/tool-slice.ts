@@ -17,20 +17,31 @@ export const toolSlice = createSlice({
     setTool: (state, action: PayloadAction<any>) => {
       state.tool = action.payload
       state.toolWidth = state.tool!.lineWidth
+      state.tool!.lineCap = 'square'
     },
     setFillColor: (state, action: PayloadAction<string>) => {
       state.tool!.fillStyle = action.payload
+      state.tool!.strokeStyle = action.payload
     },
     setStrokeColor: (state, action: PayloadAction<string>) => {
+      state.tool!.fillStyle = action.payload
       state.tool!.strokeStyle = action.payload
     },
     setLineWidth: (state, action: PayloadAction<number>) => {
       state.tool!.lineWidth = action.payload
       state.toolWidth = state.tool!.lineWidth
     },
+    setLineCap: (state, action: PayloadAction<'square' | 'butt' | 'round'>) => {
+      state.tool!.lineCap = action.payload
+    },
   },
 })
 
-export const { setTool, setFillColor, setStrokeColor, setLineWidth } =
-  toolSlice.actions
+export const {
+  setTool,
+  setFillColor,
+  setStrokeColor,
+  setLineWidth,
+  setLineCap,
+} = toolSlice.actions
 export default toolSlice.reducer

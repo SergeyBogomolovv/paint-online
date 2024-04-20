@@ -13,7 +13,9 @@ export default class Tool {
     this.socket = socket
     this.id = id
   }
-
+  set lineCap(type: 'round' | 'butt' | 'square') {
+    this.ctx!.lineCap = type
+  }
   set fillStyle(color: string) {
     this.ctx!.fillStyle = color
   }
