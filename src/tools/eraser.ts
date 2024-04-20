@@ -20,25 +20,25 @@ export default class Eraser extends Tool {
     }
     this.socket.send(JSON.stringify(message))
   }
-  mouseDownHandler(e: any) {
+  mouseDownHandler(e: MouseEvent) {
+    const { offsetX, offsetY } = e
     this.mouseDown = true
     this.ctx?.beginPath()
-    this.ctx?.moveTo(
-      e.pageX - e.target.offsetLeft,
-      e.pageY - e.target.offsetTop
-    )
+    this.ctx?.moveTo(offsetX, offsetY)
   }
-  mouseMoveHandler(e: any) {
+  mouseMoveHandler(e: MouseEvent) {
     if (this.mouseDown) {
+      const { offsetX, offsetY } = e
       const message: DrawMessage = {
         method: 'draw',
         id: this.id,
         type: MessageFigures.eraser,
         figure: {
-          x: e.pageX - e.target.offsetLeft,
-          y: e.pageY - e.target.offsetTop,
+          x: offsetX,
+          y: offsetY,
           color: this.ctx?.fillStyle.toString()!,
           lineWidth: this.ctx?.lineWidth,
+          lineCap: this.ctx?.lineCap!,
         },
       }
       this.socket.send(JSON.stringify(message))

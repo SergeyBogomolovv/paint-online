@@ -3,11 +3,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 interface ToolState {
   tool: CanvasRenderingContext2D | null
   toolWidth: number
+  toolLineCap: 'square' | 'butt' | 'round'
 }
 
 const initialState: ToolState = {
   tool: null,
   toolWidth: 0,
+  toolLineCap: 'square',
 }
 
 export const toolSlice = createSlice({
@@ -17,7 +19,7 @@ export const toolSlice = createSlice({
     setTool: (state, action: PayloadAction<any>) => {
       state.tool = action.payload
       state.toolWidth = state.tool!.lineWidth
-      state.tool!.lineCap = 'square'
+      state.toolLineCap = state.tool!.lineCap
     },
     setFillColor: (state, action: PayloadAction<string>) => {
       state.tool!.fillStyle = action.payload

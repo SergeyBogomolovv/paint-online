@@ -20,23 +20,23 @@ export default class Brush extends Tool {
     }
     this.socket.send(JSON.stringify(message))
   }
-  mouseDownHandler(e: any) {
+  mouseDownHandler(e: MouseEvent) {
+    const { offsetX, offsetY } = e
     this.mouseDown = true
     this.ctx?.beginPath()
-    this.ctx?.moveTo(
-      e.pageX - e.target.offsetLeft,
-      e.pageY - e.target.offsetTop
-    )
+    this.ctx?.moveTo(offsetX, offsetY)
   }
-  mouseMoveHandler(e: any) {
+  mouseMoveHandler(e: MouseEvent) {
     if (this.mouseDown) {
+      const { offsetX, offsetY } = e
       const message: DrawMessage = {
         method: 'draw',
         id: this.id,
         type: MessageFigures.brush,
         figure: {
-          x: e.pageX - e.target.offsetLeft,
-          y: e.pageY - e.target.offsetTop,
+          lineCap: this.ctx?.lineCap!,
+          x: offsetX,
+          y: offsetY,
           color: this.ctx?.fillStyle.toString()!,
           lineWidth: this.ctx?.lineWidth!,
         },
@@ -45,6 +45,7 @@ export default class Brush extends Tool {
     }
   }
   static draw(args: DrawArgs) {
+    args.ctx.lineCap = args.lineCap
     args.ctx.fillStyle = args.color
     args.ctx.strokeStyle = args.color
     args.ctx.lineWidth = args.lineWidth
@@ -58,4 +59,5 @@ interface DrawArgs {
   y: number
   color: string
   lineWidth: number
+  lineCap: 'butt' | 'square' | 'round'
 }

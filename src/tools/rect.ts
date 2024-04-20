@@ -33,6 +33,7 @@ export default class Rect extends Tool {
         width: this.width,
         heigth: this.heigth,
         color: this.ctx?.fillStyle.toString()!,
+        lineCap: this.ctx?.lineCap!,
       },
     }
     const finish: FinishMessage = {

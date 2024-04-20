@@ -20,6 +20,8 @@ export const useDraw = () => {
     const ctx = canvas!.getContext('2d')
     const prevColor = canvas!.getContext('2d')?.fillStyle
     const prevlineWidth = canvas!.getContext('2d')?.lineWidth
+    const prevlineCap = canvas!.getContext('2d')?.lineCap
+
     switch (msg.type) {
       case MessageFigures.brush:
         const brush = msg.figure as IBrush
@@ -31,6 +33,7 @@ export const useDraw = () => {
         ctx!.lineWidth = prevlineWidth!
         ctx!.fillStyle = prevColor!
         ctx!.strokeStyle = prevColor!
+        ctx!.lineCap = prevlineCap!
         break
       case MessageFigures.rect:
         const rect = msg.figure as IRect
@@ -41,6 +44,7 @@ export const useDraw = () => {
         ctx!.lineWidth = prevlineWidth!
         ctx!.fillStyle = prevColor!
         ctx!.strokeStyle = prevColor!
+        ctx!.lineCap = prevlineCap!
         break
       case MessageFigures.circle:
         const circle = msg.figure as ICircle
@@ -51,6 +55,7 @@ export const useDraw = () => {
         ctx!.lineWidth = prevlineWidth!
         ctx!.fillStyle = prevColor!
         ctx!.strokeStyle = prevColor!
+        ctx!.lineCap = prevlineCap!
         break
       case MessageFigures.eraser:
         const eraser = msg.figure as IBrush
@@ -61,6 +66,7 @@ export const useDraw = () => {
         ctx!.lineWidth = prevlineWidth!
         ctx!.fillStyle = prevColor!
         ctx!.strokeStyle = prevColor!
+        ctx!.lineCap = prevlineCap!
         break
       case MessageFigures.line:
         const line = msg.figure as ILine
@@ -68,6 +74,7 @@ export const useDraw = () => {
         ctx!.lineWidth = prevlineWidth!
         ctx!.fillStyle = prevColor!
         ctx!.strokeStyle = prevColor!
+        ctx!.lineCap = prevlineCap!
         break
     }
   }

@@ -39,6 +39,7 @@ export default class Circle extends Tool {
         y: this.startY,
         color: this.ctx?.fillStyle.toString()!,
         radius: this.radius,
+        lineCap: this.ctx?.lineCap!,
       },
     }
     const finish: FinishMessage = {

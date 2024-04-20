@@ -1,8 +1,6 @@
 import { FaPen } from 'react-icons/fa'
 import { FaSquare } from 'react-icons/fa'
-import { FaRegCircle } from 'react-icons/fa'
 import { FaEraser } from 'react-icons/fa'
-
 import { useAppDispatch, useAppSelector } from '@/hooks/redux'
 import {
   setFillColor,
@@ -14,7 +12,7 @@ import Rect from '@/tools/rect'
 import Circle from '@/tools/circle'
 import Eraser from '@/tools/eraser'
 import Line from '@/tools/line'
-
+import { FaCircle } from 'react-icons/fa'
 import { cn } from '@/lib/utils'
 import { ColorPicker } from 'antd'
 import { motion } from 'framer-motion'
@@ -28,7 +26,7 @@ export default function Toolbar() {
   const tools = [
     { icon: FaPen, thisTool: Brush },
     { icon: FaSquare, thisTool: Rect },
-    { icon: FaRegCircle, thisTool: Circle },
+    { icon: FaCircle, thisTool: Circle },
     { icon: FaEraser, thisTool: Eraser },
     { icon: IoRemoveOutline, thisTool: Line },
   ]

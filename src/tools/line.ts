@@ -26,14 +26,16 @@ export default class Line extends Tool {
     this.canvas.onmousemove = this.mouseMoveHandler.bind(this)
   }
 
-  mouseDownHandler(e: any) {
+  mouseDownHandler(e: MouseEvent) {
+    const { offsetX, offsetY } = e
     this.mouseDown = true
-    this.currentX = e.pageX - e.target.offsetLeft
-    this.currentY = e.pageY - e.target.offsetTop
+    this.currentX = offsetX
+    this.currentY = offsetY
     this.ctx?.beginPath()
     this.ctx?.moveTo(this.currentX, this.currentY)
     this.saved = this.canvas.toDataURL()
   }
+
   mouseUpHandler() {
     this.mouseDown = false
     const message: DrawMessage = {
@@ -46,7 +48,8 @@ export default class Line extends Tool {
         currentX: this.currentX,
         currentY: this.currentY,
         color: this.ctx?.fillStyle.toString()!,
-        lineWidth: this.ctx?.lineWidth,
+        lineWidth: this.ctx?.lineWidth!,
+        lineCap: this.ctx?.lineCap!,
       },
     }
     const finish: FinishMessage = {
@@ -57,14 +60,14 @@ export default class Line extends Tool {
     this.socket.send(JSON.stringify(finish))
   }
 
-  mouseMoveHandler(e: any) {
+  mouseMoveHandler(e: MouseEvent) {
     if (this.mouseDown) {
-      this.x = e.pageX - e.target.offsetLeft
-      this.y = e.pageY - e.target.offsetTop
+      const { offsetX, offsetY } = e
+      this.x = offsetX
+      this.y = offsetY
       this.draw(this.x, this.y)
     }
   }
-
   draw(x: number, y: number) {
     const img = new Image()
     img.src = this.saved
@@ -78,6 +81,7 @@ export default class Line extends Tool {
     }
   }
   static drawLine(args: DrawArgs) {
+    args.ctx.lineCap = args.lineCap
     args.ctx.fillStyle = args.color
     args.ctx.strokeStyle = args.color
     args.ctx.lineWidth = args.lineWidth
@@ -94,5 +98,6 @@ interface DrawArgs {
   currentX: number
   currentY: number
   lineWidth: number
+  lineCap: 'butt' | 'square' | 'round'
   color: string
 }
