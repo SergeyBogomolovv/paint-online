@@ -2,8 +2,8 @@ import Tool from './tool'
 import { Socket } from 'socket.io-client'
 
 export default class Brush extends Tool {
-  constructor(canvas: HTMLCanvasElement, socket: Socket, id: string) {
-    super(canvas, socket, id)
+  constructor(canvas: HTMLCanvasElement, socket: Socket) {
+    super(canvas, socket)
     this.listen()
   }
   listen() {

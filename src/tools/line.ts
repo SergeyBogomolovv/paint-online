@@ -9,8 +9,8 @@ export default class Line extends Tool {
   x: number
   y: number
   saved: string
-  constructor(canvas: HTMLCanvasElement, socket: Socket, id: string) {
-    super(canvas, socket, id)
+  constructor(canvas: HTMLCanvasElement, socket: Socket) {
+    super(canvas, socket)
     this.listen()
     this.name = 'Line'
     this.currentX = 0

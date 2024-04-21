@@ -5,15 +5,13 @@ export default class Tool {
   mouseDown: boolean
   ctx: CanvasRenderingContext2D | null
   socket: Socket
-  id: string
 
-  constructor(canvas: HTMLCanvasElement, socket: Socket, id: string) {
+  constructor(canvas: HTMLCanvasElement, socket: Socket) {
     this.mouseDown = false
     this.canvas = canvas
     this.ctx = canvas.getContext('2d')
     this.destroyEvents()
     this.socket = socket
-    this.id = id
   }
   set lineCap(type: 'round' | 'butt' | 'square') {
     this.ctx!.lineCap = type

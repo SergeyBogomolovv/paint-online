@@ -3,8 +3,8 @@ import Tool from './tool'
 import { Socket } from 'socket.io-client'
 
 export default class Eraser extends Tool {
-  constructor(canvas: HTMLCanvasElement, socket: Socket, id: string) {
-    super(canvas, socket, id)
+  constructor(canvas: HTMLCanvasElement, socket: Socket) {
+    super(canvas, socket)
     this.listen()
   }
   listen() {
@@ -20,6 +20,8 @@ export default class Eraser extends Tool {
     const { offsetX, offsetY } = e
     this.mouseDown = true
     this.ctx?.beginPath()
+    this.ctx!.fillStyle = 'white'
+    this.ctx!.strokeStyle = 'white'
     this.ctx?.moveTo(offsetX, offsetY)
     this.ctx?.lineTo(offsetX, offsetY)
     this.ctx?.stroke()

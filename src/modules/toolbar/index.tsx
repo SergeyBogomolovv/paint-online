@@ -20,7 +20,7 @@ import { IoRemoveOutline } from 'react-icons/io5'
 
 export default function Toolbar() {
   const dispatch = useAppDispatch()
-  const { canvas, socket, sessionId } = useAppSelector((state) => state.canvas)
+  const { canvas, socket } = useAppSelector((state) => state.canvas)
   const { tool } = useAppSelector((state) => state.tools)
 
   const tools = [
@@ -39,7 +39,7 @@ export default function Toolbar() {
             key={t.thisTool.name}
             whileHover={{ scale: 1.2 }}
             onClick={() => {
-              dispatch(setTool(new t.thisTool(canvas!, socket!, sessionId!)))
+              dispatch(setTool(new t.thisTool(canvas!, socket!)))
             }}
           >
             <t.icon

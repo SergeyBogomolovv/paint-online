@@ -7,8 +7,8 @@ export default class Rect extends Tool {
   saved: string
   width: number
   heigth: number
-  constructor(canvas: HTMLCanvasElement, socket: Socket, id: string) {
-    super(canvas, socket, id)
+  constructor(canvas: HTMLCanvasElement, socket: Socket) {
+    super(canvas, socket)
     this.startX = 0
     this.heigth = 0
     this.width = 0

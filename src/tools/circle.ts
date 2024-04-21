@@ -6,8 +6,8 @@ export default class Circle extends Tool {
   startY: number
   saved: string
   radius: number
-  constructor(canvas: HTMLCanvasElement, socket: Socket, id: string) {
-    super(canvas, socket, id)
+  constructor(canvas: HTMLCanvasElement, socket: Socket) {
+    super(canvas, socket)
     this.startX = 0
     this.startY = 0
     this.saved = ''
