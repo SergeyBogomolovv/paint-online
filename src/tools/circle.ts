@@ -1,12 +1,12 @@
-import { DrawMessage, MessageFigures } from '@/interfaces/draw-message'
+import { MessageFigures } from '@/interfaces/draw-message'
 import Tool from './tool'
-import { FinishMessage } from '@/interfaces/finish-message'
+import { Socket } from 'socket.io-client'
 export default class Circle extends Tool {
   startX: number
   startY: number
   saved: string
   radius: number
-  constructor(canvas: HTMLCanvasElement, socket: WebSocket, id: string) {
+  constructor(canvas: HTMLCanvasElement, socket: Socket, id: string) {
     super(canvas, socket, id)
     this.startX = 0
     this.startY = 0
@@ -30,9 +30,7 @@ export default class Circle extends Tool {
   }
   mouseUpHandler() {
     this.mouseDown = false
-    const message: DrawMessage = {
-      method: 'draw',
-      id: this.id,
+    this.socket.emit('draw', {
       type: MessageFigures.circle,
       figure: {
         x: this.startX,
@@ -41,13 +39,8 @@ export default class Circle extends Tool {
         radius: this.radius,
         lineCap: this.ctx?.lineCap!,
       },
-    }
-    const finish: FinishMessage = {
-      method: 'finish',
-      id: this.id,
-    }
-    this.socket.send(JSON.stringify(message))
-    this.socket.send(JSON.stringify(finish))
+    })
+    this.socket.emit('finish')
   }
   mouseMoveHandler(e: any) {
     if (this.mouseDown) {
@@ -66,15 +59,19 @@ export default class Circle extends Tool {
       this.ctx?.clearRect(0, 0, this.canvas.width, this.canvas.height)
       this.ctx?.drawImage(img, 0, 0, this.canvas.width, this.canvas.height)
       this.ctx?.beginPath()
+      this.ctx!.lineWidth = 1
+
       this.ctx?.arc(x, y, r, 0, 2 * Math.PI)
       this.ctx?.fill()
       this.ctx?.stroke()
     }
   }
   static drawCircle(args: DrawCircleArgs) {
+    args.ctx.lineWidth = 1
     args.ctx.fillStyle = args.color
     args.ctx.strokeStyle = args.color
     args.ctx.beginPath()
+
     args.ctx.arc(args.x, args.y, args.radius, 0, 2 * Math.PI)
     args.ctx.fill()
     args.ctx.stroke()

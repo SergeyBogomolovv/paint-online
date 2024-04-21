@@ -1,6 +1,6 @@
-import { DrawMessage, MessageFigures } from '@/interfaces/draw-message'
+import { MessageFigures } from '@/interfaces/draw-message'
 import Tool from './tool'
-import { FinishMessage } from '@/interfaces/finish-message'
+import { Socket } from 'socket.io-client'
 
 export default class Line extends Tool {
   name: string
@@ -9,7 +9,7 @@ export default class Line extends Tool {
   x: number
   y: number
   saved: string
-  constructor(canvas: HTMLCanvasElement, socket: WebSocket, id: string) {
+  constructor(canvas: HTMLCanvasElement, socket: Socket, id: string) {
     super(canvas, socket, id)
     this.listen()
     this.name = 'Line'
@@ -35,12 +35,9 @@ export default class Line extends Tool {
     this.ctx?.moveTo(this.currentX, this.currentY)
     this.saved = this.canvas.toDataURL()
   }
-
   mouseUpHandler() {
     this.mouseDown = false
-    const message: DrawMessage = {
-      method: 'draw',
-      id: this.id,
+    this.socket.emit('draw', {
       type: MessageFigures.line,
       figure: {
         x: this.x,
@@ -51,15 +48,9 @@ export default class Line extends Tool {
         lineWidth: this.ctx?.lineWidth!,
         lineCap: this.ctx?.lineCap!,
       },
-    }
-    const finish: FinishMessage = {
-      method: 'finish',
-      id: this.id,
-    }
-    this.socket.send(JSON.stringify(message))
-    this.socket.send(JSON.stringify(finish))
+    })
+    this.socket.emit('finish')
   }
-
   mouseMoveHandler(e: MouseEvent) {
     if (this.mouseDown) {
       const { offsetX, offsetY } = e

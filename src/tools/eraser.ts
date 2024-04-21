@@ -1,9 +1,9 @@
-import { DrawMessage, MessageFigures } from '@/interfaces/draw-message'
+import { MessageFigures } from '@/interfaces/draw-message'
 import Tool from './tool'
-import { FinishMessage } from '@/interfaces/finish-message'
+import { Socket } from 'socket.io-client'
 
 export default class Eraser extends Tool {
-  constructor(canvas: HTMLCanvasElement, socket: WebSocket, id: string) {
+  constructor(canvas: HTMLCanvasElement, socket: Socket, id: string) {
     super(canvas, socket, id)
     this.listen()
   }
@@ -14,11 +14,7 @@ export default class Eraser extends Tool {
   }
   mouseUpHandler() {
     this.mouseDown = false
-    const message: FinishMessage = {
-      method: 'finish',
-      id: this.id,
-    }
-    this.socket.send(JSON.stringify(message))
+    this.socket.emit('finish')
   }
   mouseDownHandler(e: MouseEvent) {
     const { offsetX, offsetY } = e
@@ -31,9 +27,7 @@ export default class Eraser extends Tool {
   mouseMoveHandler(e: MouseEvent) {
     if (this.mouseDown) {
       const { offsetX, offsetY } = e
-      const message: DrawMessage = {
-        method: 'draw',
-        id: this.id,
+      this.socket.emit('draw', {
         type: MessageFigures.eraser,
         figure: {
           x: offsetX,
@@ -42,8 +36,7 @@ export default class Eraser extends Tool {
           lineWidth: this.ctx?.lineWidth,
           lineCap: this.ctx?.lineCap!,
         },
-      }
-      this.socket.send(JSON.stringify(message))
+      })
     }
   }
   static erase(args: EraseArgs) {

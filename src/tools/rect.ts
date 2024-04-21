@@ -1,13 +1,13 @@
-import { DrawMessage, MessageFigures } from '@/interfaces/draw-message'
+import { MessageFigures } from '@/interfaces/draw-message'
 import Tool from './tool'
-import { FinishMessage } from '@/interfaces/finish-message'
+import { Socket } from 'socket.io-client'
 export default class Rect extends Tool {
   startX: number
   startY: number
   saved: string
   width: number
   heigth: number
-  constructor(canvas: HTMLCanvasElement, socket: WebSocket, id: string) {
+  constructor(canvas: HTMLCanvasElement, socket: Socket, id: string) {
     super(canvas, socket, id)
     this.startX = 0
     this.heigth = 0
@@ -23,9 +23,8 @@ export default class Rect extends Tool {
   }
   mouseUpHandler() {
     this.mouseDown = false
-    const message: DrawMessage = {
-      method: 'draw',
-      id: this.id,
+
+    this.socket.emit('draw', {
       type: MessageFigures.rect,
       figure: {
         x: this.startX,
@@ -35,13 +34,8 @@ export default class Rect extends Tool {
         color: this.ctx?.fillStyle.toString()!,
         lineCap: this.ctx?.lineCap!,
       },
-    }
-    const finish: FinishMessage = {
-      method: 'finish',
-      id: this.id,
-    }
-    this.socket.send(JSON.stringify(message))
-    this.socket.send(JSON.stringify(finish))
+    })
+    this.socket.emit('finish')
   }
   mouseDownHandler(e: any) {
     this.mouseDown = true
@@ -66,12 +60,14 @@ export default class Rect extends Tool {
       this.ctx?.clearRect(0, 0, this.canvas.width, this.canvas.height)
       this.ctx?.drawImage(img, 0, 0, this.canvas.width, this.canvas.height)
       this.ctx?.beginPath()
+      this.ctx!.lineWidth = 1
       this.ctx?.rect(x, y, w, h)
       this.ctx?.fill()
       this.ctx?.stroke()
     }
   }
   static drawRect(args: DrawRectArgs) {
+    args.ctx.lineWidth = 1
     args.ctx.fillStyle = args.color
     args.ctx.strokeStyle = args.color
     args.ctx.beginPath()

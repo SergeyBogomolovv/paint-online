@@ -1,11 +1,13 @@
+import { Socket } from 'socket.io-client'
+
 export default class Tool {
   canvas: HTMLCanvasElement
   mouseDown: boolean
   ctx: CanvasRenderingContext2D | null
-  socket: WebSocket
+  socket: Socket
   id: string
 
-  constructor(canvas: HTMLCanvasElement, socket: WebSocket, id: string) {
+  constructor(canvas: HTMLCanvasElement, socket: Socket, id: string) {
     this.mouseDown = false
     this.canvas = canvas
     this.ctx = canvas.getContext('2d')

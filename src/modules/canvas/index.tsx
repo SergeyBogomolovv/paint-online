@@ -4,10 +4,8 @@ import { setCanvas, setSocket } from '@/redux/slices/canvas-slice'
 import Brush from '@/tools/brush'
 import { setTool } from '@/redux/slices/tool-slice'
 import { Navigate } from 'react-router'
-import { useSocketConnection } from '@/hooks/use-socket-connection'
-import { ActionMessage } from '@/interfaces/undo-message'
 import { io } from 'socket.io-client'
-import { toast } from 'sonner'
+import { useConnection } from '@/hooks/use-connection'
 
 export default function Canvas() {
   const canvasRef: Ref<HTMLCanvasElement> = useRef(null)
@@ -15,30 +13,17 @@ export default function Canvas() {
     (state) => state.canvas
   )
   const dispatch = useAppDispatch()
-  const { onMessage, onOpen } = useSocketConnection()
+  const connect = useConnection()
 
   useEffect(() => {
     dispatch(setCanvas(canvasRef.current))
   }, [])
-
   useEffect(() => {
     if (canvas && username) {
-      const sock = io('http://localhost:5174')
-      sock.emit(
-        'connection',
-        { name: username, id: sessionId },
-        (message: string) => {
-          toast.success(message)
-        }
-      )
-      sock.on('connection', (message: string) => {
-        toast.success(message)
-      })
-      const socket = new WebSocket(`ws://localhost:5174/`)
+      const socket = io('http://localhost:5174')
+      connect(socket)
       dispatch(setTool(new Brush(canvas, socket, sessionId!)))
       dispatch(setSocket(socket))
-      onMessage(socket)
-      onOpen(socket)
     }
   }, [username, canvas])
 
@@ -48,13 +33,7 @@ export default function Canvas() {
         <canvas
           onMouseDown={() => {
             const data = canvasRef.current!.toDataURL()
-            const message: ActionMessage = {
-              id: sessionId,
-              method: 'action',
-              type: 'save',
-              data,
-            }
-            socket?.send(JSON.stringify(message))
+            socket?.emit('save', { data })
           }}
           className='mx-auto bg-white rounded-lg '
           ref={canvasRef}

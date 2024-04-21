@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { Socket } from 'socket.io-client'
 
 interface CanvasState {
   canvas: HTMLCanvasElement | null
   undoList: HTMLImageElement[]
   redoList: HTMLImageElement[]
   username: string
-  socket: WebSocket | null
+  socket: Socket | null
   sessionId: string | null
 }
 
@@ -28,7 +29,7 @@ export const canvasSlice = createSlice({
     setSessionId: (state, action: PayloadAction<string>) => {
       state.sessionId = action.payload
     },
-    setSocket: (state, action: PayloadAction<WebSocket>) => {
+    setSocket: (state, action: PayloadAction<any>) => {
       state.socket = action.payload
     },
     setCanvas: (state, action: PayloadAction<any>) => {
