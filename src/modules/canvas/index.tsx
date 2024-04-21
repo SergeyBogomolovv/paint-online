@@ -6,6 +6,8 @@ import { setTool } from '@/redux/slices/tool-slice'
 import { Navigate } from 'react-router'
 import { useSocketConnection } from '@/hooks/use-socket-connection'
 import { ActionMessage } from '@/interfaces/undo-message'
+import { io } from 'socket.io-client'
+import { toast } from 'sonner'
 
 export default function Canvas() {
   const canvasRef: Ref<HTMLCanvasElement> = useRef(null)
@@ -21,6 +23,17 @@ export default function Canvas() {
 
   useEffect(() => {
     if (canvas && username) {
+      const sock = io('http://localhost:5174')
+      sock.emit(
+        'connection',
+        { name: username, id: sessionId },
+        (message: string) => {
+          toast.success(message)
+        }
+      )
+      sock.on('connection', (message: string) => {
+        toast.success(message)
+      })
       const socket = new WebSocket(`ws://localhost:5174/`)
       dispatch(setTool(new Brush(canvas, socket, sessionId!)))
       dispatch(setSocket(socket))
