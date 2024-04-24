@@ -9,18 +9,18 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
-  setIsOwner,
-  setSessionId,
   setUsername,
+  setTitle as updateTitle,
 } from '@/redux/slices/canvas-slice'
 import { useNavigate } from 'react-router'
 import { useState } from 'react'
 import { useAppDispatch } from '@/hooks/redux'
-import { v4 as uuid } from 'uuid'
 
 export default function CreateBoardForm() {
   const navigate = useNavigate()
   const [name, setName] = useState('')
+  const [title, setTitle] = useState('')
+
   const dispatch = useAppDispatch()
 
   return (
@@ -38,15 +38,22 @@ export default function CreateBoardForm() {
           onChange={(e) => setName(e.target.value)}
           placeholder='Ваше имя'
         />
+        <Input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder='Название доски'
+        />
       </CardContent>
       <CardFooter>
         <Button
           onClick={() => {
-            const id = uuid()
-            dispatch(setIsOwner(true))
-            dispatch(setSessionId(id))
-            dispatch(setUsername(name))
-            navigate(`/${id}`)
+            if (title && name) {
+              dispatch(updateTitle(title))
+              dispatch(setUsername(name))
+              navigate(`/${title}`)
+            } else {
+              return
+            }
           }}
         >
           Создать

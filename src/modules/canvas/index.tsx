@@ -10,11 +10,11 @@ import axios from 'axios'
 
 export default function Canvas() {
   const canvasRef: Ref<HTMLCanvasElement> = useRef(null)
-  const { username, sessionId, canvas, socket, isOwner } = useAppSelector(
+  const { username, title, canvas, socket } = useAppSelector(
     (state) => state.canvas
   )
   const dispatch = useAppDispatch()
-  const { listeners, create, connect } = useConnection()
+  const { listeners, connect } = useConnection()
 
   useEffect(() => {
     dispatch(setCanvas(canvasRef.current))
@@ -23,13 +23,7 @@ export default function Canvas() {
   useEffect(() => {
     if (canvas && username) {
       const socket = io('http://localhost:5174')
-      if (isOwner) {
-        create({
-          data: canvas!.toDataURL(),
-          key: sessionId!,
-        })
-      }
-      connect(sessionId!)
+      connect(title)
       listeners(socket)
       dispatch(setTool(new Brush(canvas, socket)))
       dispatch(setSocket(socket))
@@ -38,18 +32,18 @@ export default function Canvas() {
 
   return (
     <>
-      {username && sessionId ? (
+      {username && title ? (
         <canvas
           onMouseUp={() => {
             const data = canvasRef.current!.toDataURL()
             axios.put('http://localhost:5174/drawing', {
               data,
-              id: sessionId,
+              title: title,
             })
           }}
           onMouseDown={() => {
             const data = canvasRef.current!.toDataURL()
-            socket?.emit('push', { data, id: sessionId })
+            socket?.emit('push', { data, title: title })
           }}
           className='mx-auto bg-white rounded-lg '
           ref={canvasRef}

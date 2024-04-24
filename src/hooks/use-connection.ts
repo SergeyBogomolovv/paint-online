@@ -8,13 +8,11 @@ import { nullRedo, nullUndo } from '@/redux/slices/canvas-slice'
 
 export const useConnection = () => {
   const dispatch = useAppDispatch()
-  const { username, sessionId, canvas } = useAppSelector(
-    (state) => state.canvas
-  )
+  const { username, title, canvas } = useAppSelector((state) => state.canvas)
   const { draw, finish } = useDraw()
   const { save, undo, redo } = useUndo()
-  const connect = async (id: string) => {
-    const response = await axios.get(`http://localhost:5174/drawing/${id}`)
+  const connect = async (title: string) => {
+    const response = await axios.get(`http://localhost:5174/drawing/${title}`)
     if (response.data) {
       const ctx = canvas?.getContext('2d')
       const img = new Image()
@@ -25,11 +23,9 @@ export const useConnection = () => {
       }
     }
   }
-  const create = async (data: { data: string; key: string }) => {
-    await axios.post('http://localhost:5174/drawing', data)
-  }
+
   const listeners = (socket: Socket) => {
-    socket.emit('connection', { name: username, id: sessionId })
+    socket.emit('connection', { name: username, id: title })
     socket.on('connection', (message: any) => {
       dispatch(nullRedo())
       dispatch(nullUndo())
@@ -49,5 +45,5 @@ export const useConnection = () => {
       redo()
     })
   }
-  return { listeners, create, connect }
+  return { listeners, connect }
 }

@@ -5,12 +5,12 @@ import { FaRegSave } from 'react-icons/fa'
 import { useAppSelector } from '@/hooks/redux'
 
 export default function Tools() {
-  const { canvas, sessionId } = useAppSelector((state) => state.canvas)
+  const { canvas, title } = useAppSelector((state) => state.canvas)
   const download = () => {
     const dataUrl = canvas?.toDataURL()
     const a = document.createElement('a')
     a.href = dataUrl!
-    a.download = sessionId + '.jpg'
+    a.download = title + '.jpg'
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -29,8 +29,8 @@ export default function Tools() {
         className='bg-white rounded-2xl p-2'
         whileHover={{ scale: 1.2 }}
         onClick={async () => {
-          await navigator.clipboard.writeText(sessionId!)
-          toast.success('Ключ доски скопирован в буфер обмена')
+          await navigator.clipboard.writeText(title)
+          toast.success('Название доски скопировано в буфер обмена')
         }}
       >
         <FaPersonCirclePlus className='w-6 h-6' />

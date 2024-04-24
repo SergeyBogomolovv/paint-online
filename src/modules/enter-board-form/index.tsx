@@ -11,13 +11,16 @@ import { Input } from '@/components/ui/input'
 import { useNavigate } from 'react-router'
 import { useState } from 'react'
 import { useAppDispatch } from '@/hooks/redux'
-import { setSessionId, setUsername } from '@/redux/slices/canvas-slice'
+import {
+  setUsername,
+  setTitle as updateTitle,
+} from '@/redux/slices/canvas-slice'
 
 export default function EnterBoardForm() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const [name, setName] = useState('')
-  const [key, setKey] = useState('')
+  const [title, setTitle] = useState('')
   return (
     <Card>
       <CardHeader>
@@ -33,17 +36,21 @@ export default function EnterBoardForm() {
           placeholder='Ваше имя'
         />
         <Input
-          value={key}
-          onChange={(e) => setKey(e.target.value)}
-          placeholder='Ключ доски'
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder='Название доски'
         />
       </CardContent>
       <CardFooter>
         <Button
           onClick={() => {
-            dispatch(setSessionId(key))
-            dispatch(setUsername(name))
-            navigate(`/${key}`)
+            if (title && name) {
+              dispatch(updateTitle(title))
+              dispatch(setUsername(name))
+              navigate(`/${title}`)
+            } else {
+              return
+            }
           }}
         >
           Войти

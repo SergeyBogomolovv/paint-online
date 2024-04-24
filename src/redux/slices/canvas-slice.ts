@@ -8,17 +8,15 @@ interface CanvasState {
   username: string
   socket: Socket | null
   title: string
-  isOwner: boolean
 }
 
 const initialState: CanvasState = {
   username: '',
+  title: '',
   canvas: null,
   undoList: [],
   redoList: [],
   socket: null,
-  title: '',
-  isOwner: false,
 }
 
 export const canvasSlice = createSlice({
@@ -56,7 +54,7 @@ export const canvasSlice = createSlice({
         ctx?.clearRect(0, 0, state.canvas!.width, state.canvas!.height)
         ctx?.drawImage(img, 0, 0, state.canvas!.width, state.canvas!.height)
         state.socket?.emit('save', {
-          id: state.title,
+          title: state.title,
           data: state.canvas?.toDataURL()!,
         })
       }
@@ -71,7 +69,7 @@ export const canvasSlice = createSlice({
         ctx?.clearRect(0, 0, state.canvas!.width, state.canvas!.height)
         ctx?.drawImage(img, 0, 0, state.canvas!.width, state.canvas!.height)
         state.socket?.emit('save', {
-          id: state.title,
+          title: state.title,
           data: state.canvas?.toDataURL()!,
         })
       }
