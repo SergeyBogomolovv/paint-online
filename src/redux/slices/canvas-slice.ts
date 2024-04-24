@@ -58,9 +58,9 @@ export const canvasSlice = createSlice({
         state.redoList = [...state.redoList, image]
         ctx?.clearRect(0, 0, state.canvas!.width, state.canvas!.height)
         ctx?.drawImage(img, 0, 0, state.canvas!.width, state.canvas!.height)
-        state.socket?.emit('set', {
-          data: state.canvas?.toDataURL()!,
+        state.socket?.emit('save', {
           id: state.sessionId,
+          data: state.canvas?.toDataURL()!,
         })
       }
     },
@@ -73,9 +73,9 @@ export const canvasSlice = createSlice({
         state.undoList = [...state.undoList, image]
         ctx?.clearRect(0, 0, state.canvas!.width, state.canvas!.height)
         ctx?.drawImage(img, 0, 0, state.canvas!.width, state.canvas!.height)
-        state.socket?.emit('set', {
-          data: state.canvas?.toDataURL()!,
+        state.socket?.emit('save', {
           id: state.sessionId,
+          data: state.canvas?.toDataURL()!,
         })
       }
     },

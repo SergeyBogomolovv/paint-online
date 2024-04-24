@@ -4,7 +4,6 @@ import { useUndo } from './use-undo'
 import { toast } from 'sonner'
 import { useAppDispatch, useAppSelector } from './redux'
 import axios from 'axios'
-import { useState } from 'react'
 import { nullRedo, nullUndo } from '@/redux/slices/canvas-slice'
 
 export const useConnection = () => {
@@ -12,13 +11,10 @@ export const useConnection = () => {
   const { username, sessionId, canvas } = useAppSelector(
     (state) => state.canvas
   )
-  const [pending, setPending] = useState(false)
   const { draw, finish } = useDraw()
   const { save, undo, redo } = useUndo()
   const connect = async (id: string) => {
-    setPending(true)
     const response = await axios.get(`http://localhost:5174/drawing/${id}`)
-    setPending(false)
     if (response.data) {
       const ctx = canvas?.getContext('2d')
       const img = new Image()
@@ -43,7 +39,7 @@ export const useConnection = () => {
     socket.on('finish', () => {
       finish()
     })
-    socket.on('save', (data: string) => {
+    socket.on('push', (data: string) => {
       save(data)
     })
     socket.on('undo', () => {
@@ -53,5 +49,5 @@ export const useConnection = () => {
       redo()
     })
   }
-  return { listeners, create, connect, pending }
+  return { listeners, create, connect }
 }

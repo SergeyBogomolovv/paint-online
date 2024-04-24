@@ -14,7 +14,7 @@ export default function Canvas() {
     (state) => state.canvas
   )
   const dispatch = useAppDispatch()
-  const { listeners, create, connect, pending } = useConnection()
+  const { listeners, create, connect } = useConnection()
 
   useEffect(() => {
     dispatch(setCanvas(canvasRef.current))
@@ -40,7 +40,6 @@ export default function Canvas() {
     <>
       {username && sessionId ? (
         <canvas
-          aria-disabled={pending}
           onMouseUp={() => {
             const data = canvasRef.current!.toDataURL()
             axios.put('http://localhost:5174/drawing', {
@@ -50,7 +49,7 @@ export default function Canvas() {
           }}
           onMouseDown={() => {
             const data = canvasRef.current!.toDataURL()
-            socket?.emit('save', { data, id: sessionId })
+            socket?.emit('push', { data, id: sessionId })
           }}
           className='mx-auto bg-white rounded-lg '
           ref={canvasRef}
