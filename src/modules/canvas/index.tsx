@@ -13,7 +13,6 @@ export default function Canvas() {
   const { username, title, canvas, socket } = useAppSelector(
     (state) => state.canvas
   )
-
   const dispatch = useAppDispatch()
   const { listeners, connect } = useConnection()
 
@@ -36,10 +35,11 @@ export default function Canvas() {
       {username && title ? (
         <canvas
           onMouseUp={() => {
-            const data = canvasRef.current!.toDataURL()
-            axios.put(`${import.meta.env.VITE_SERVER_URL}/drawing`, {
-              data,
-              title: title,
+            canvasRef.current!.toBlob((blob) => {
+              const formData = new FormData()
+              formData.append('image', blob!)
+              formData.append('title', title)
+              axios.put(`${import.meta.env.VITE_SERVER_URL}/drawing`, formData)
             })
           }}
           onMouseDown={() => {

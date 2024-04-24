@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from './redux'
 import axios from 'axios'
 import { nullRedo, nullUndo } from '@/redux/slices/canvas-slice'
 import { ConnectionMessage } from '@/interfaces/connection-message'
+import { ConnectionResponse } from '@/interfaces/connection-response'
 
 export const useConnection = () => {
   const dispatch = useAppDispatch()
@@ -13,7 +14,7 @@ export const useConnection = () => {
   const { draw, finish } = useDraw()
   const { save, undo, redo } = useUndo()
   const connect = async (title: string) => {
-    const response = await axios.get(
+    const response = await axios.get<ConnectionResponse>(
       `${import.meta.env.VITE_SERVER_URL}/drawing/${title}`
     )
     const ctx = canvas?.getContext('2d')

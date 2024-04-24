@@ -54,9 +54,11 @@ export const canvasSlice = createSlice({
         state.redoList = [...state.redoList, image]
         ctx?.clearRect(0, 0, state.canvas!.width, state.canvas!.height)
         ctx?.drawImage(img, 0, 0, state.canvas!.width, state.canvas!.height)
-        axios.put(`${import.meta.env.VITE_SERVER_URL}/drawing`, {
-          title: state.title,
-          data: state.canvas?.toDataURL()!,
+        state.canvas?.toBlob((blob) => {
+          const formData = new FormData()
+          formData.append('image', blob!)
+          formData.append('title', state.title)
+          axios.put(`${import.meta.env.VITE_SERVER_URL}/drawing`, formData)
         })
       }
     },
@@ -69,9 +71,11 @@ export const canvasSlice = createSlice({
         state.undoList = [...state.undoList, image]
         ctx?.clearRect(0, 0, state.canvas!.width, state.canvas!.height)
         ctx?.drawImage(img, 0, 0, state.canvas!.width, state.canvas!.height)
-        axios.put(`${import.meta.env.VITE_SERVER_URL}/drawing`, {
-          title: state.title,
-          data: state.canvas?.toDataURL()!,
+        state.canvas?.toBlob((blob) => {
+          const formData = new FormData()
+          formData.append('image', blob!)
+          formData.append('title', state.title)
+          axios.put(`${import.meta.env.VITE_SERVER_URL}/drawing`, formData)
         })
       }
     },
