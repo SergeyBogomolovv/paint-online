@@ -27,6 +27,7 @@ import {
 export default function EnterBoardForm() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
+
   const form = useForm<z.infer<typeof EnterSchema>>({
     resolver: zodResolver(EnterSchema),
     defaultValues: { title: '', name: '' },

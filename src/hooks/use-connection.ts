@@ -24,7 +24,6 @@ export const useConnection = () => {
       ctx?.drawImage(img, 0, 0, canvas!.width, canvas!.height)
     }
   }
-
   const listeners = (socket: Socket) => {
     socket.emit('connection', { name: username, title: title })
     socket.on('connection', (message: ConnectionMessage) => {
@@ -36,7 +35,8 @@ export const useConnection = () => {
     socket.on('finish', () => {
       finish()
     })
-    socket.on('push', (data: string) => {
+    socket.on('save', () => {
+      const data = canvas?.toDataURL()!
       save(data)
     })
     socket.on('undo', () => {

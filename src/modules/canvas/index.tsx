@@ -13,6 +13,7 @@ export default function Canvas() {
   const { username, title, canvas, socket } = useAppSelector(
     (state) => state.canvas
   )
+
   const dispatch = useAppDispatch()
   const { listeners, connect } = useConnection()
 
@@ -21,14 +22,14 @@ export default function Canvas() {
   }, [])
 
   useEffect(() => {
-    if (canvas && username) {
+    if (canvas && title) {
       const socket = io(`${import.meta.env.VITE_SERVER_URL}`)
       connect(title)
       listeners(socket)
       dispatch(setTool(new Brush(canvas, socket)))
       dispatch(setSocket(socket))
     }
-  }, [username, canvas])
+  }, [title, canvas])
 
   return (
     <>
@@ -42,8 +43,7 @@ export default function Canvas() {
             })
           }}
           onMouseDown={() => {
-            const data = canvasRef.current!.toDataURL()
-            socket?.emit('push', { data, title: title })
+            socket?.emit('save')
           }}
           className='mx-auto bg-white rounded-lg '
           ref={canvasRef}

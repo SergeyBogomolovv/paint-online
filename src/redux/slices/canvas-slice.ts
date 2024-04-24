@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import axios from 'axios'
 import { Socket } from 'socket.io-client'
 
 interface CanvasState {
@@ -53,7 +54,7 @@ export const canvasSlice = createSlice({
         state.redoList = [...state.redoList, image]
         ctx?.clearRect(0, 0, state.canvas!.width, state.canvas!.height)
         ctx?.drawImage(img, 0, 0, state.canvas!.width, state.canvas!.height)
-        state.socket?.emit('save', {
+        axios.put(`${import.meta.env.VITE_SERVER_URL}/drawing`, {
           title: state.title,
           data: state.canvas?.toDataURL()!,
         })
@@ -68,7 +69,7 @@ export const canvasSlice = createSlice({
         state.undoList = [...state.undoList, image]
         ctx?.clearRect(0, 0, state.canvas!.width, state.canvas!.height)
         ctx?.drawImage(img, 0, 0, state.canvas!.width, state.canvas!.height)
-        state.socket?.emit('save', {
+        axios.put(`${import.meta.env.VITE_SERVER_URL}/drawing`, {
           title: state.title,
           data: state.canvas?.toDataURL()!,
         })
