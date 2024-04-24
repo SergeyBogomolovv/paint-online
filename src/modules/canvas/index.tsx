@@ -4,28 +4,34 @@ import { setCanvas, setSocket } from '@/redux/slices/canvas-slice'
 import Brush from '@/tools/brush'
 import { setTool } from '@/redux/slices/tool-slice'
 import { Navigate } from 'react-router'
-import { useSocketConnection } from '@/hooks/use-socket-connection'
-import { ActionMessage } from '@/interfaces/undo-message'
+import { io } from 'socket.io-client'
+import { useConnection } from '@/hooks/use-connection'
 
 export default function Canvas() {
   const canvasRef: Ref<HTMLCanvasElement> = useRef(null)
-  const { username, sessionId, canvas, socket } = useAppSelector(
-    (state) => state.canvas
-  )
+  const { username, sessionId, canvas, socket, undoList, redoList, isOwner } =
+    useAppSelector((state) => state.canvas)
   const dispatch = useAppDispatch()
-  const { onMessage, onOpen } = useSocketConnection()
+  const { listeners, create, connect, pending } = useConnection()
 
   useEffect(() => {
     dispatch(setCanvas(canvasRef.current))
   }, [])
-
   useEffect(() => {
     if (canvas && username) {
-      const socket = new WebSocket(`ws://localhost:5174/`)
-      dispatch(setTool(new Brush(canvas, socket, sessionId!)))
+      const socket = io('http://localhost:5174')
+      if (isOwner) {
+        create({
+          undoList,
+          redoList,
+          data: canvas!.toDataURL(),
+          key: sessionId!,
+        })
+      }
+      connect(sessionId!)
+      listeners(socket)
+      dispatch(setTool(new Brush(canvas, socket)))
       dispatch(setSocket(socket))
-      onMessage(socket)
-      onOpen(socket)
     }
   }, [username, canvas])
 
@@ -33,15 +39,10 @@ export default function Canvas() {
     <>
       {username && sessionId ? (
         <canvas
-          onMouseDown={() => {
+          aria-disabled={pending}
+          onMouseUp={() => {
             const data = canvasRef.current!.toDataURL()
-            const message: ActionMessage = {
-              id: sessionId,
-              method: 'action',
-              type: 'save',
-              data,
-            }
-            socket?.send(JSON.stringify(message))
+            socket?.emit('save', { data, id: sessionId })
           }}
           className='mx-auto bg-white rounded-lg '
           ref={canvasRef}

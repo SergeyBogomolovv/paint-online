@@ -1,17 +1,17 @@
+import { Socket } from 'socket.io-client'
+
 export default class Tool {
   canvas: HTMLCanvasElement
   mouseDown: boolean
   ctx: CanvasRenderingContext2D | null
-  socket: WebSocket
-  id: string
+  socket: Socket
 
-  constructor(canvas: HTMLCanvasElement, socket: WebSocket, id: string) {
+  constructor(canvas: HTMLCanvasElement, socket: Socket) {
     this.mouseDown = false
     this.canvas = canvas
     this.ctx = canvas.getContext('2d')
     this.destroyEvents()
     this.socket = socket
-    this.id = id
   }
   set lineCap(type: 'round' | 'butt' | 'square') {
     this.ctx!.lineCap = type

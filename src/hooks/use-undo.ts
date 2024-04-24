@@ -1,4 +1,3 @@
-import { ActionMessage } from '@/interfaces/undo-message'
 import { useAppDispatch } from './redux'
 import { pushToUndo } from '@/redux/slices/canvas-slice'
 import {
@@ -8,9 +7,10 @@ import {
 
 export const useUndo = () => {
   const dispatch = useAppDispatch()
-  const push = (msg: ActionMessage) => {
+  const save = (data: string) => {
+    console.log(data)
     const img = new Image()
-    img.src = msg.data!
+    img.src = data
     dispatch(pushToUndo(img))
   }
   const undo = () => {
@@ -19,5 +19,5 @@ export const useUndo = () => {
   const redo = () => {
     dispatch(redoAction())
   }
-  return { push, undo, redo }
+  return { save, undo, redo }
 }

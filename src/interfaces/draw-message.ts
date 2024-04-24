@@ -1,13 +1,5 @@
-import { IBrush } from './brush'
-import { ICircle } from './circle'
-import { Figure } from './figure'
-import { ILine } from './line'
-import { IRect } from './rect'
-
 export interface DrawMessage {
-  id: string
-  method: 'draw'
-  figure: Figure | IBrush | ILine | IRect | ICircle
+  figure: any
   type: MessageFigures
 }
 

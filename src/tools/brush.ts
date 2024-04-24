@@ -1,10 +1,9 @@
-import { DrawMessage, MessageFigures } from '@/interfaces/draw-message'
 import Tool from './tool'
-import { FinishMessage } from '@/interfaces/finish-message'
+import { Socket } from 'socket.io-client'
 
 export default class Brush extends Tool {
-  constructor(canvas: HTMLCanvasElement, socket: WebSocket, id: string) {
-    super(canvas, socket, id)
+  constructor(canvas: HTMLCanvasElement, socket: Socket) {
+    super(canvas, socket)
     this.listen()
   }
   listen() {
@@ -14,11 +13,7 @@ export default class Brush extends Tool {
   }
   mouseUpHandler() {
     this.mouseDown = false
-    const message: FinishMessage = {
-      method: 'finish',
-      id: this.id,
-    }
-    this.socket.send(JSON.stringify(message))
+    this.socket.emit('finish')
   }
   mouseDownHandler(e: MouseEvent) {
     const { offsetX, offsetY } = e
@@ -31,10 +26,8 @@ export default class Brush extends Tool {
   mouseMoveHandler(e: MouseEvent) {
     if (this.mouseDown) {
       const { offsetX, offsetY } = e
-      const message: DrawMessage = {
-        method: 'draw',
-        id: this.id,
-        type: MessageFigures.brush,
+      this.socket.emit('draw', {
+        type: 'brush',
         figure: {
           lineCap: this.ctx?.lineCap!,
           x: offsetX,
@@ -42,8 +35,7 @@ export default class Brush extends Tool {
           color: this.ctx?.fillStyle.toString()!,
           lineWidth: this.ctx?.lineWidth!,
         },
-      }
-      this.socket.send(JSON.stringify(message))
+      })
     }
   }
   static draw(args: DrawArgs) {
