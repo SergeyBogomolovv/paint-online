@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { useAppDispatch, useAppSelector } from './redux'
 import axios from 'axios'
 import { nullRedo, nullUndo } from '@/redux/slices/canvas-slice'
+import { ConnectionMessage } from '@/interfaces/connection-message'
 
 export const useConnection = () => {
   const dispatch = useAppDispatch()
@@ -12,21 +13,21 @@ export const useConnection = () => {
   const { draw, finish } = useDraw()
   const { save, undo, redo } = useUndo()
   const connect = async (title: string) => {
-    const response = await axios.get(`http://localhost:5174/drawing/${title}`)
-    if (response.data) {
-      const ctx = canvas?.getContext('2d')
-      const img = new Image()
-      img.src = response.data.data
-      img.onload = async () => {
-        ctx?.clearRect(0, 0, canvas!.width, canvas!.height)
-        ctx?.drawImage(img, 0, 0, canvas!.width, canvas!.height)
-      }
+    const response = await axios.get(
+      `${import.meta.env.VITE_SERVER_URL}/drawing/${title}`
+    )
+    const ctx = canvas?.getContext('2d')
+    const img = new Image()
+    img.src = response.data.data
+    img.onload = async () => {
+      ctx?.clearRect(0, 0, canvas!.width, canvas!.height)
+      ctx?.drawImage(img, 0, 0, canvas!.width, canvas!.height)
     }
   }
 
   const listeners = (socket: Socket) => {
-    socket.emit('connection', { name: username, id: title })
-    socket.on('connection', (message: any) => {
+    socket.emit('connection', { name: username, title: title })
+    socket.on('connection', (message: ConnectionMessage) => {
       dispatch(nullRedo())
       dispatch(nullUndo())
       toast.success(message.message)

@@ -22,7 +22,7 @@ export default function Canvas() {
 
   useEffect(() => {
     if (canvas && username) {
-      const socket = io('http://localhost:5174')
+      const socket = io(`${import.meta.env.VITE_SERVER_URL}`)
       connect(title)
       listeners(socket)
       dispatch(setTool(new Brush(canvas, socket)))
@@ -36,7 +36,7 @@ export default function Canvas() {
         <canvas
           onMouseUp={() => {
             const data = canvasRef.current!.toDataURL()
-            axios.put('http://localhost:5174/drawing', {
+            axios.put(`${import.meta.env.VITE_SERVER_URL}/drawing`, {
               data,
               title: title,
             })

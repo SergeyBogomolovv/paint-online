@@ -9,53 +9,78 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useNavigate } from 'react-router'
-import { useState } from 'react'
 import { useAppDispatch } from '@/hooks/redux'
+import { setUsername, setTitle } from '@/redux/slices/canvas-slice'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
+import { EnterSchema } from '@/schemas'
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
-  setUsername,
-  setTitle as updateTitle,
-} from '@/redux/slices/canvas-slice'
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 
 export default function EnterBoardForm() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const [name, setName] = useState('')
-  const [title, setTitle] = useState('')
+  const form = useForm<z.infer<typeof EnterSchema>>({
+    resolver: zodResolver(EnterSchema),
+    defaultValues: { title: '', name: '' },
+  })
+  function onSubmit(values: z.infer<typeof EnterSchema>) {
+    dispatch(setUsername(values.name))
+    dispatch(setTitle(values.title))
+    navigate(`/${values.title}`)
+  }
+
   return (
-    <Card>
+    <Card className='w-[600px]'>
       <CardHeader>
         <CardTitle>Рисуйте с друзьями</CardTitle>
         <CardDescription>
-          Попросите ключ доступа у вашего друга и попадите к нему на доску
+          Спросите название доски у вашего знакомого и попадите к нему на доску
+          или же, вы создадите новую доску на которую сможете пригласить друзей
         </CardDescription>
       </CardHeader>
-      <CardContent className='space-y-4'>
-        <Input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder='Ваше имя'
-        />
-        <Input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder='Название доски'
-        />
-      </CardContent>
-      <CardFooter>
-        <Button
-          onClick={() => {
-            if (title && name) {
-              dispatch(updateTitle(title))
-              dispatch(setUsername(name))
-              navigate(`/${title}`)
-            } else {
-              return
-            }
-          }}
-        >
-          Войти
-        </Button>
-      </CardFooter>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <CardContent className='space-y-4'>
+            <FormField
+              control={form.control}
+              name='name'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ваше имя</FormLabel>
+                  <FormControl>
+                    <Input placeholder='Иван' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='title'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Название доски</FormLabel>
+                  <FormControl>
+                    <Input placeholder='Волшебный пони' {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+          <CardFooter>
+            <Button type='submit'>Войти</Button>
+          </CardFooter>
+        </form>
+      </Form>
     </Card>
   )
 }
