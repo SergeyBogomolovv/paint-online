@@ -26,12 +26,7 @@ export const useConnection = () => {
       ctx?.drawImage(img, 0, 0, canvas!.width, canvas!.height)
     }
   }
-  const create = async (data: {
-    undoList: HTMLImageElement[]
-    redoList: HTMLImageElement[]
-    data: string
-    key: string
-  }) => {
+  const create = async (data: { data: string; key: string }) => {
     await axios.post('http://localhost:5174/drawing', data)
   }
   const listeners = (socket: Socket) => {

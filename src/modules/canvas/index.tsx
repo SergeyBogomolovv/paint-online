@@ -9,8 +9,9 @@ import { useConnection } from '@/hooks/use-connection'
 
 export default function Canvas() {
   const canvasRef: Ref<HTMLCanvasElement> = useRef(null)
-  const { username, sessionId, canvas, socket, undoList, redoList, isOwner } =
-    useAppSelector((state) => state.canvas)
+  const { username, sessionId, canvas, socket, isOwner } = useAppSelector(
+    (state) => state.canvas
+  )
   const dispatch = useAppDispatch()
   const { listeners, create, connect, pending } = useConnection()
 
@@ -22,8 +23,6 @@ export default function Canvas() {
       const socket = io('http://localhost:5174')
       if (isOwner) {
         create({
-          undoList,
-          redoList,
           data: canvas!.toDataURL(),
           key: sessionId!,
         })
@@ -40,7 +39,7 @@ export default function Canvas() {
       {username && sessionId ? (
         <canvas
           aria-disabled={pending}
-          onMouseUp={() => {
+          onMouseDown={() => {
             const data = canvasRef.current!.toDataURL()
             socket?.emit('save', { data, id: sessionId })
           }}
