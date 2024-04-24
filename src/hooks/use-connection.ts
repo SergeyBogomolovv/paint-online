@@ -3,16 +3,15 @@ import { useDraw } from './use-draw'
 import { useUndo } from './use-undo'
 import { toast } from 'sonner'
 import { useAppDispatch, useAppSelector } from './redux'
-import { DataMessage } from '@/interfaces/data-message'
 import axios from 'axios'
 import { useState } from 'react'
-import { pushToRedo, pushToUndo } from '@/redux/slices/canvas-slice'
+import { nullRedo, nullUndo } from '@/redux/slices/canvas-slice'
 
 export const useConnection = () => {
+  const dispatch = useAppDispatch()
   const { username, sessionId, canvas } = useAppSelector(
     (state) => state.canvas
   )
-  const dispatch = useAppDispatch()
   const [pending, setPending] = useState(false)
   const { draw, finish } = useDraw()
   const { save, undo, redo } = useUndo()
@@ -28,16 +27,6 @@ export const useConnection = () => {
         ctx?.clearRect(0, 0, canvas!.width, canvas!.height)
         ctx?.drawImage(img, 0, 0, canvas!.width, canvas!.height)
       }
-      response.data.undoList.forEach((data: string) => {
-        const img = new Image()
-        img.src = data
-        dispatch(pushToUndo(img))
-      })
-      response.data.redoList.forEach((data: string) => {
-        const img = new Image()
-        img.src = data
-        dispatch(pushToRedo(img))
-      })
     }
   }
   const create = async (data: { data: string; key: string }) => {
@@ -45,10 +34,9 @@ export const useConnection = () => {
   }
   const listeners = (socket: Socket) => {
     socket.emit('connection', { name: username, id: sessionId })
-    socket.on('data', (data: DataMessage) => {
-      console.log(data)
-    })
     socket.on('connection', (message: any) => {
+      dispatch(nullRedo())
+      dispatch(nullUndo())
       toast.success(message.message)
     })
     draw(socket)

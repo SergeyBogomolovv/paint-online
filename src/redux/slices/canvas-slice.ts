@@ -43,8 +43,11 @@ export const canvasSlice = createSlice({
     pushToUndo: (state, action: PayloadAction<any>) => {
       state.undoList = [...state.undoList, action.payload]
     },
-    pushToRedo: (state, action: PayloadAction<any>) => {
-      state.redoList = [...state.redoList, action.payload]
+    nullRedo: (state) => {
+      state.redoList = []
+    },
+    nullUndo: (state) => {
+      state.undoList = []
     },
     undo: (state) => {
       let ctx = state.canvas?.getContext('2d')
@@ -55,11 +58,11 @@ export const canvasSlice = createSlice({
         state.redoList = [...state.redoList, image]
         ctx?.clearRect(0, 0, state.canvas!.width, state.canvas!.height)
         ctx?.drawImage(img, 0, 0, state.canvas!.width, state.canvas!.height)
+        state.socket?.emit('set', {
+          data: state.canvas?.toDataURL()!,
+          id: state.sessionId,
+        })
       }
-      console.log({
-        undoList: state.undoList.length,
-        redoList: state.redoList.length,
-      })
     },
     redo: (state) => {
       let ctx = state.canvas?.getContext('2d')
@@ -70,11 +73,11 @@ export const canvasSlice = createSlice({
         state.undoList = [...state.undoList, image]
         ctx?.clearRect(0, 0, state.canvas!.width, state.canvas!.height)
         ctx?.drawImage(img, 0, 0, state.canvas!.width, state.canvas!.height)
+        state.socket?.emit('set', {
+          data: state.canvas?.toDataURL()!,
+          id: state.sessionId,
+        })
       }
-      console.log({
-        undoList: state.undoList.length,
-        redoList: state.redoList.length,
-      })
     },
   },
 })
@@ -82,7 +85,8 @@ export const canvasSlice = createSlice({
 export const {
   setCanvas,
   pushToUndo,
-  pushToRedo,
+  nullRedo,
+  nullUndo,
   undo,
   redo,
   setUsername,
