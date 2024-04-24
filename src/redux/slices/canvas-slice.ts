@@ -40,11 +40,11 @@ export const canvasSlice = createSlice({
     pushToUndo: (state, action: PayloadAction<any>) => {
       state.undoList = [...state.undoList, action.payload]
     },
-    setUndoList: (state, action: PayloadAction<any>) => {
-      state.undoList = action.payload
+    nullRedo: (state) => {
+      state.redoList = []
     },
-    setRedoList: (state, action: PayloadAction<any>) => {
-      state.redoList = action.payload
+    nullUndo: (state) => {
+      state.undoList = []
     },
     undo: (state) => {
       let ctx = state.canvas?.getContext('2d')
@@ -55,6 +55,10 @@ export const canvasSlice = createSlice({
         state.redoList = [...state.redoList, image]
         ctx?.clearRect(0, 0, state.canvas!.width, state.canvas!.height)
         ctx?.drawImage(img, 0, 0, state.canvas!.width, state.canvas!.height)
+        state.socket?.emit('save', {
+          id: state.title,
+          data: state.canvas?.toDataURL()!,
+        })
       }
     },
     redo: (state) => {
@@ -66,6 +70,10 @@ export const canvasSlice = createSlice({
         state.undoList = [...state.undoList, image]
         ctx?.clearRect(0, 0, state.canvas!.width, state.canvas!.height)
         ctx?.drawImage(img, 0, 0, state.canvas!.width, state.canvas!.height)
+        state.socket?.emit('save', {
+          id: state.title,
+          data: state.canvas?.toDataURL()!,
+        })
       }
     },
   },
@@ -74,13 +82,13 @@ export const canvasSlice = createSlice({
 export const {
   setCanvas,
   pushToUndo,
+  nullRedo,
+  nullUndo,
   undo,
   redo,
   setUsername,
   setTitle,
   setSocket,
-  setUndoList,
-  setRedoList,
 } = canvasSlice.actions
 
 export default canvasSlice.reducer

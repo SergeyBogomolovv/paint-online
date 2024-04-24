@@ -6,24 +6,25 @@ import { setTool } from '@/redux/slices/tool-slice'
 import { Navigate } from 'react-router'
 import { io } from 'socket.io-client'
 import { useConnection } from '@/hooks/use-connection'
+import axios from 'axios'
 
 export default function Canvas() {
   const canvasRef: Ref<HTMLCanvasElement> = useRef(null)
-  const { username, sessionId, canvas, socket, undoList, redoList, isOwner } =
-    useAppSelector((state) => state.canvas)
+  const { username, sessionId, canvas, socket, isOwner } = useAppSelector(
+    (state) => state.canvas
+  )
   const dispatch = useAppDispatch()
-  const { listeners, create, connect, pending } = useConnection()
+  const { listeners, create, connect } = useConnection()
 
   useEffect(() => {
     dispatch(setCanvas(canvasRef.current))
   }, [])
+
   useEffect(() => {
     if (canvas && username) {
       const socket = io('http://localhost:5174')
       if (isOwner) {
         create({
-          undoList,
-          redoList,
           data: canvas!.toDataURL(),
           key: sessionId!,
         })
@@ -39,10 +40,16 @@ export default function Canvas() {
     <>
       {username && sessionId ? (
         <canvas
-          aria-disabled={pending}
           onMouseUp={() => {
             const data = canvasRef.current!.toDataURL()
-            socket?.emit('save', { data, id: sessionId })
+            axios.put('http://localhost:5174/drawing', {
+              data,
+              id: sessionId,
+            })
+          }}
+          onMouseDown={() => {
+            const data = canvasRef.current!.toDataURL()
+            socket?.emit('push', { data, id: sessionId })
           }}
           className='mx-auto bg-white rounded-lg '
           ref={canvasRef}
