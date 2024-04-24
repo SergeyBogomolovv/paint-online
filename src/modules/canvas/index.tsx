@@ -6,6 +6,7 @@ import { setTool } from '@/redux/slices/tool-slice'
 import { Navigate } from 'react-router'
 import { io } from 'socket.io-client'
 import { useConnection } from '@/hooks/use-connection'
+import axios from 'axios'
 
 export default function Canvas() {
   const canvasRef: Ref<HTMLCanvasElement> = useRef(null)
@@ -18,6 +19,7 @@ export default function Canvas() {
   useEffect(() => {
     dispatch(setCanvas(canvasRef.current))
   }, [])
+
   useEffect(() => {
     if (canvas && username) {
       const socket = io('http://localhost:5174')
@@ -39,6 +41,13 @@ export default function Canvas() {
       {username && sessionId ? (
         <canvas
           aria-disabled={pending}
+          onMouseUp={() => {
+            const data = canvasRef.current!.toDataURL()
+            axios.put('http://localhost:5174/drawing', {
+              data,
+              id: sessionId,
+            })
+          }}
           onMouseDown={() => {
             const data = canvasRef.current!.toDataURL()
             socket?.emit('save', { data, id: sessionId })

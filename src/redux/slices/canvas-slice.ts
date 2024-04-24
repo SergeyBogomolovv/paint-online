@@ -43,11 +43,8 @@ export const canvasSlice = createSlice({
     pushToUndo: (state, action: PayloadAction<any>) => {
       state.undoList = [...state.undoList, action.payload]
     },
-    setUndoList: (state, action: PayloadAction<any>) => {
-      state.undoList = action.payload
-    },
-    setRedoList: (state, action: PayloadAction<any>) => {
-      state.redoList = action.payload
+    pushToRedo: (state, action: PayloadAction<any>) => {
+      state.redoList = [...state.redoList, action.payload]
     },
     undo: (state) => {
       let ctx = state.canvas?.getContext('2d')
@@ -59,6 +56,10 @@ export const canvasSlice = createSlice({
         ctx?.clearRect(0, 0, state.canvas!.width, state.canvas!.height)
         ctx?.drawImage(img, 0, 0, state.canvas!.width, state.canvas!.height)
       }
+      console.log({
+        undoList: state.undoList.length,
+        redoList: state.redoList.length,
+      })
     },
     redo: (state) => {
       let ctx = state.canvas?.getContext('2d')
@@ -70,6 +71,10 @@ export const canvasSlice = createSlice({
         ctx?.clearRect(0, 0, state.canvas!.width, state.canvas!.height)
         ctx?.drawImage(img, 0, 0, state.canvas!.width, state.canvas!.height)
       }
+      console.log({
+        undoList: state.undoList.length,
+        redoList: state.redoList.length,
+      })
     },
   },
 })
@@ -77,14 +82,13 @@ export const canvasSlice = createSlice({
 export const {
   setCanvas,
   pushToUndo,
+  pushToRedo,
   undo,
   redo,
   setUsername,
   setSessionId,
   setSocket,
   setIsOwner,
-  setUndoList,
-  setRedoList,
 } = canvasSlice.actions
 
 export default canvasSlice.reducer

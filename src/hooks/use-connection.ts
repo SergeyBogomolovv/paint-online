@@ -2,15 +2,17 @@ import { Socket } from 'socket.io-client'
 import { useDraw } from './use-draw'
 import { useUndo } from './use-undo'
 import { toast } from 'sonner'
-import { useAppSelector } from './redux'
+import { useAppDispatch, useAppSelector } from './redux'
 import { DataMessage } from '@/interfaces/data-message'
 import axios from 'axios'
 import { useState } from 'react'
+import { pushToRedo, pushToUndo } from '@/redux/slices/canvas-slice'
 
 export const useConnection = () => {
   const { username, sessionId, canvas } = useAppSelector(
     (state) => state.canvas
   )
+  const dispatch = useAppDispatch()
   const [pending, setPending] = useState(false)
   const { draw, finish } = useDraw()
   const { save, undo, redo } = useUndo()
@@ -18,12 +20,24 @@ export const useConnection = () => {
     setPending(true)
     const response = await axios.get(`http://localhost:5174/drawing/${id}`)
     setPending(false)
-    const ctx = canvas?.getContext('2d')
-    const img = new Image()
-    img.src = response.data.data
-    img.onload = async () => {
-      ctx?.clearRect(0, 0, canvas!.width, canvas!.height)
-      ctx?.drawImage(img, 0, 0, canvas!.width, canvas!.height)
+    if (response.data) {
+      const ctx = canvas?.getContext('2d')
+      const img = new Image()
+      img.src = response.data.data
+      img.onload = async () => {
+        ctx?.clearRect(0, 0, canvas!.width, canvas!.height)
+        ctx?.drawImage(img, 0, 0, canvas!.width, canvas!.height)
+      }
+      response.data.undoList.forEach((data: string) => {
+        const img = new Image()
+        img.src = data
+        dispatch(pushToUndo(img))
+      })
+      response.data.redoList.forEach((data: string) => {
+        const img = new Image()
+        img.src = data
+        dispatch(pushToRedo(img))
+      })
     }
   }
   const create = async (data: { data: string; key: string }) => {

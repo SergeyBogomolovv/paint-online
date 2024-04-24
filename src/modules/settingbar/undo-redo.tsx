@@ -4,7 +4,7 @@ import { useAppSelector } from '@/hooks/redux'
 import { motion } from 'framer-motion'
 
 export default function UndoRedoActions() {
-  const { socket } = useAppSelector((state) => state.canvas)
+  const { socket, sessionId } = useAppSelector((state) => state.canvas)
 
   return (
     <>
@@ -12,7 +12,7 @@ export default function UndoRedoActions() {
         className='bg-white rounded-2xl p-2'
         whileHover={{ scale: 1.2 }}
         onClick={() => {
-          socket?.emit('undo')
+          socket?.emit('undo', { key: sessionId })
         }}
       >
         <RiArrowGoBackFill className='w-6 h-6' />
@@ -21,7 +21,7 @@ export default function UndoRedoActions() {
         className='bg-white rounded-2xl p-2'
         whileHover={{ scale: 1.2 }}
         onClick={() => {
-          socket?.emit('redo')
+          socket?.emit('redo', { key: sessionId })
         }}
       >
         <RiArrowGoForwardFill className='w-6 h-6' />
