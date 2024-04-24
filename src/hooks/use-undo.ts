@@ -8,6 +8,7 @@ import {
 export const useUndo = () => {
   const dispatch = useAppDispatch()
   const save = (data: string) => {
+    console.log(data)
     const img = new Image()
     img.src = data
     dispatch(pushToUndo(img))

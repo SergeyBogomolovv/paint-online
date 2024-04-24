@@ -8,7 +8,11 @@ import {
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { setSessionId, setUsername } from '@/redux/slices/canvas-slice'
+import {
+  setIsOwner,
+  setSessionId,
+  setUsername,
+} from '@/redux/slices/canvas-slice'
 import { useNavigate } from 'react-router'
 import { useState } from 'react'
 import { useAppDispatch } from '@/hooks/redux'
@@ -39,6 +43,7 @@ export default function CreateBoardForm() {
         <Button
           onClick={() => {
             const id = uuid()
+            dispatch(setIsOwner(true))
             dispatch(setSessionId(id))
             dispatch(setUsername(name))
             navigate(`/${id}`)

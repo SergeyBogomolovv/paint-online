@@ -9,11 +9,10 @@ import { useConnection } from '@/hooks/use-connection'
 
 export default function Canvas() {
   const canvasRef: Ref<HTMLCanvasElement> = useRef(null)
-  const { username, sessionId, canvas, socket } = useAppSelector(
-    (state) => state.canvas
-  )
+  const { username, sessionId, canvas, socket, undoList, redoList, isOwner } =
+    useAppSelector((state) => state.canvas)
   const dispatch = useAppDispatch()
-  const connect = useConnection()
+  const { listeners, create, connect, pending } = useConnection()
 
   useEffect(() => {
     dispatch(setCanvas(canvasRef.current))
@@ -21,8 +20,17 @@ export default function Canvas() {
   useEffect(() => {
     if (canvas && username) {
       const socket = io('http://localhost:5174')
-      connect(socket)
-      dispatch(setTool(new Brush(canvas, socket, sessionId!)))
+      if (isOwner) {
+        create({
+          undoList,
+          redoList,
+          data: canvas!.toDataURL(),
+          key: sessionId!,
+        })
+      }
+      connect(sessionId!)
+      listeners(socket)
+      dispatch(setTool(new Brush(canvas, socket)))
       dispatch(setSocket(socket))
     }
   }, [username, canvas])
@@ -31,9 +39,10 @@ export default function Canvas() {
     <>
       {username && sessionId ? (
         <canvas
-          onMouseDown={() => {
+          aria-disabled={pending}
+          onMouseUp={() => {
             const data = canvasRef.current!.toDataURL()
-            socket?.emit('save', { data })
+            socket?.emit('save', { data, id: sessionId })
           }}
           className='mx-auto bg-white rounded-lg '
           ref={canvasRef}

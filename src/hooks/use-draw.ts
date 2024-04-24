@@ -16,8 +16,8 @@ export const useDraw = () => {
   const draw = (socket: Socket) => {
     figures.forEach((figure) => {
       socket.on(figure, (res) => {
-        const ctx = canvas!.getContext('2d')
-        const prevColor = canvas!.getContext('2d')?.fillStyle
+        const ctx = canvas?.getContext('2d')
+        const prevColor = canvas?.getContext('2d')?.fillStyle
         const prevlineWidth = canvas!.getContext('2d')?.lineWidth
         const prevlineCap = canvas!.getContext('2d')?.lineCap
         if (figure === 'brush') Brush.draw({ ctx: ctx!, ...res })

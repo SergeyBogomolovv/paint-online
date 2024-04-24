@@ -8,6 +8,7 @@ interface CanvasState {
   username: string
   socket: Socket | null
   sessionId: string | null
+  isOwner: boolean
 }
 
 const initialState: CanvasState = {
@@ -17,12 +18,16 @@ const initialState: CanvasState = {
   redoList: [],
   socket: null,
   sessionId: null,
+  isOwner: false,
 }
 
 export const canvasSlice = createSlice({
   name: 'canvas',
   initialState,
   reducers: {
+    setIsOwner: (state, action: PayloadAction<boolean>) => {
+      state.isOwner = action.payload
+    },
     setUsername: (state, action: PayloadAction<string>) => {
       state.username = action.payload
     },
@@ -37,6 +42,12 @@ export const canvasSlice = createSlice({
     },
     pushToUndo: (state, action: PayloadAction<any>) => {
       state.undoList = [...state.undoList, action.payload]
+    },
+    setUndoList: (state, action: PayloadAction<any>) => {
+      state.undoList = action.payload
+    },
+    setRedoList: (state, action: PayloadAction<any>) => {
+      state.redoList = action.payload
     },
     undo: (state) => {
       let ctx = state.canvas?.getContext('2d')
@@ -71,6 +82,9 @@ export const {
   setUsername,
   setSessionId,
   setSocket,
+  setIsOwner,
+  setUndoList,
+  setRedoList,
 } = canvasSlice.actions
 
 export default canvasSlice.reducer
