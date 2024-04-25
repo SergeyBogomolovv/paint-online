@@ -18,7 +18,7 @@ export const useConnection = (socket: Socket) => {
   const dispatch = useAppDispatch()
   const { username, title, canvas } = useAppSelector((state) => state.canvas)
   const { draw, finish } = useDraw(socket)
-
+  console.log('sf')
   const listeners = [
     {
       event: 'disconnection',
@@ -69,7 +69,7 @@ export const useConnection = (socket: Socket) => {
       socket.on(event, action)
     })
     const { data: res } = await axios.get<ConnectionResponse>(
-      `${import.meta.env.VITE_SERVER_URL}/drawing/${title}`
+      `${import.meta.env.VITE_SERVER_URL}/drawing/${title}`,
     )
     const ctx = canvas?.getContext('2d')
     const img = new Image()

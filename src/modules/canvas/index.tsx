@@ -12,7 +12,6 @@ export default function Canvas() {
 
   const dispatch = useAppDispatch()
   const connect = useConnection(socket!)
-
   useEffect(() => {
     dispatch(setCanvas(canvasRef.current))
   }, [])
