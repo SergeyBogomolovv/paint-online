@@ -1,4 +1,4 @@
-import { MessageFigures } from '@/interfaces/message-figures'
+import { Figures } from '@/schemas/figures'
 import Tool from './tool'
 import { Socket } from 'socket.io-client'
 export default class Rect extends Tool {
@@ -25,7 +25,7 @@ export default class Rect extends Tool {
     this.mouseDown = false
 
     this.socket.emit('draw', {
-      type: MessageFigures.rect,
+      type: Figures.enum.rect,
       figure: {
         x: this.startX,
         y: this.startY,
