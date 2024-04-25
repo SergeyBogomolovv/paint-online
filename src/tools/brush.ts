@@ -13,6 +13,7 @@ export default class Brush extends Tool {
   }
   mouseUpHandler() {
     this.mouseDown = false
+    this.ctx?.closePath()
     this.socket.emit('finish')
   }
   mouseDownHandler(e: MouseEvent) {

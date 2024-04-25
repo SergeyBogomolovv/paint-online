@@ -1,15 +1,11 @@
-import LineCap from './line-cap'
-import LineWidth from './line-width'
+import ToolSettings from './tool-settings'
 import Tools from './tools'
 import UndoRedoActions from './undo-redo'
 
 export default function Settings() {
   return (
     <div className='flex justify-between py-4 w-[1500px] mx-auto'>
-      <div className='flex items-center gap-2'>
-        <LineWidth />
-        <LineCap />
-      </div>
+      <ToolSettings />
       <div className='flex items-center gap-3'>
         <UndoRedoActions />
         <Tools />

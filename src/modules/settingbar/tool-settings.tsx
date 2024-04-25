@@ -8,27 +8,32 @@ import { Slider } from '@/components/ui/slider'
 import { Button } from '@/components/ui/button'
 import { MdOutlineArrowDropDown } from 'react-icons/md'
 import { useAppDispatch, useAppSelector } from '@/hooks/redux'
+import LineCap from './line-cap'
 
-export default function LineWidth() {
+export default function ToolSettings() {
   const dispatch = useAppDispatch()
   const { toolWidth } = useAppSelector((state) => state.tools)
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button variant={'outline'}>
-          Толщина линии: {toolWidth}
+          Настройки инструмента
           <MdOutlineArrowDropDown className='h-5 w-5 ml-2' />
         </Button>
       </PopoverTrigger>
-      <PopoverContent>
-        <Slider
-          onValueChange={(n) => {
-            dispatch(setLineWidth(n[0]))
-          }}
-          defaultValue={[toolWidth]}
-          max={100}
-          step={1}
-        />
+      <PopoverContent className='space-y-4'>
+        <div className='flex items-center gap-2'>
+          <p>Толщина</p>
+          <Slider
+            onValueChange={(n) => {
+              dispatch(setLineWidth(n[0]))
+            }}
+            defaultValue={[toolWidth]}
+            max={100}
+            step={1}
+          />
+        </div>
+        <LineCap />
       </PopoverContent>
     </Popover>
   )
