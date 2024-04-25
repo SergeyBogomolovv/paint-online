@@ -26,7 +26,7 @@ export default function LineWidth() {
             dispatch(setLineWidth(n[0]))
           }}
           defaultValue={[toolWidth]}
-          max={50}
+          max={100}
           step={1}
         />
       </PopoverContent>

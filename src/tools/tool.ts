@@ -5,7 +5,6 @@ export default class Tool {
   mouseDown: boolean
   ctx: CanvasRenderingContext2D | null
   socket: Socket
-
   constructor(canvas: HTMLCanvasElement, socket: Socket) {
     this.mouseDown = false
     this.canvas = canvas
@@ -26,7 +25,7 @@ export default class Tool {
     this.ctx!.lineWidth = width
   }
   get lineWidth() {
-    return this.ctx!.lineWidth
+    return this.ctx?.lineWidth!
   }
   destroyEvents() {
     this.canvas.onmousedown = null

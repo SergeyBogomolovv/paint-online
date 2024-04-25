@@ -1,4 +1,4 @@
-import { MessageFigures } from '@/interfaces/draw-message'
+import { MessageFigures } from '@/interfaces/message-figures'
 import Tool from './tool'
 import { Socket } from 'socket.io-client'
 export default class Circle extends Tool {
@@ -60,7 +60,6 @@ export default class Circle extends Tool {
       this.ctx?.drawImage(img, 0, 0, this.canvas.width, this.canvas.height)
       this.ctx?.beginPath()
       this.ctx!.lineWidth = 1
-
       this.ctx?.arc(x, y, r, 0, 2 * Math.PI)
       this.ctx?.fill()
       this.ctx?.stroke()
@@ -71,7 +70,6 @@ export default class Circle extends Tool {
     args.ctx.fillStyle = args.color
     args.ctx.strokeStyle = args.color
     args.ctx.beginPath()
-
     args.ctx.arc(args.x, args.y, args.radius, 0, 2 * Math.PI)
     args.ctx.fill()
     args.ctx.stroke()

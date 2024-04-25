@@ -1,38 +1,34 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import axios from 'axios'
 import { Socket } from 'socket.io-client'
 
 interface CanvasState {
   canvas: HTMLCanvasElement | null
   undoList: HTMLImageElement[]
   redoList: HTMLImageElement[]
-  username: string
   socket: Socket | null
-  sessionId: string | null
-  isOwner: boolean
+  username: string
+  title: string
 }
 
 const initialState: CanvasState = {
-  username: 'Gerax',
+  username: '',
+  title: '',
   canvas: null,
   undoList: [],
   redoList: [],
   socket: null,
-  sessionId: null,
-  isOwner: false,
 }
 
 export const canvasSlice = createSlice({
   name: 'canvas',
   initialState,
   reducers: {
-    setIsOwner: (state, action: PayloadAction<boolean>) => {
-      state.isOwner = action.payload
-    },
     setUsername: (state, action: PayloadAction<string>) => {
       state.username = action.payload
     },
-    setSessionId: (state, action: PayloadAction<string>) => {
-      state.sessionId = action.payload
+    setTitle: (state, action: PayloadAction<string>) => {
+      state.title = action.payload
     },
     setSocket: (state, action: PayloadAction<any>) => {
       state.socket = action.payload
@@ -43,10 +39,8 @@ export const canvasSlice = createSlice({
     pushToUndo: (state, action: PayloadAction<any>) => {
       state.undoList = [...state.undoList, action.payload]
     },
-    nullRedo: (state) => {
+    nullLists: (state) => {
       state.redoList = []
-    },
-    nullUndo: (state) => {
       state.undoList = []
     },
     undo: (state) => {
@@ -58,9 +52,12 @@ export const canvasSlice = createSlice({
         state.redoList = [...state.redoList, image]
         ctx?.clearRect(0, 0, state.canvas!.width, state.canvas!.height)
         ctx?.drawImage(img, 0, 0, state.canvas!.width, state.canvas!.height)
-        state.socket?.emit('save', {
-          id: state.sessionId,
-          data: state.canvas?.toDataURL()!,
+        const title = state.title
+        state.canvas?.toBlob((blob) => {
+          const formData = new FormData()
+          formData.append('image', blob!)
+          formData.append('title', title)
+          axios.put(`${import.meta.env.VITE_SERVER_URL}/drawing`, formData)
         })
       }
     },
@@ -73,9 +70,12 @@ export const canvasSlice = createSlice({
         state.undoList = [...state.undoList, image]
         ctx?.clearRect(0, 0, state.canvas!.width, state.canvas!.height)
         ctx?.drawImage(img, 0, 0, state.canvas!.width, state.canvas!.height)
-        state.socket?.emit('save', {
-          id: state.sessionId,
-          data: state.canvas?.toDataURL()!,
+        const title = state.title
+        state.canvas?.toBlob((blob) => {
+          const formData = new FormData()
+          formData.append('image', blob!)
+          formData.append('title', title)
+          axios.put(`${import.meta.env.VITE_SERVER_URL}/drawing`, formData)
         })
       }
     },
@@ -85,14 +85,12 @@ export const canvasSlice = createSlice({
 export const {
   setCanvas,
   pushToUndo,
-  nullRedo,
-  nullUndo,
+  nullLists,
   undo,
   redo,
   setUsername,
-  setSessionId,
+  setTitle,
   setSocket,
-  setIsOwner,
 } = canvasSlice.actions
 
 export default canvasSlice.reducer
