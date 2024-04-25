@@ -1,4 +1,4 @@
-import { MessageFigures } from '@/interfaces/draw-message'
+import { MessageFigures } from '@/interfaces/message-figures'
 import Tool from './tool'
 import { Socket } from 'socket.io-client'
 export default class Circle extends Tool {

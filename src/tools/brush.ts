@@ -32,8 +32,8 @@ export default class Brush extends Tool {
           lineCap: this.ctx?.lineCap!,
           x: offsetX,
           y: offsetY,
-          color: this.ctx?.fillStyle.toString()!,
-          lineWidth: this.ctx?.lineWidth!,
+          color: this.ctx?.fillStyle.toString(),
+          lineWidth: this.ctx?.lineWidth,
         },
       })
     }

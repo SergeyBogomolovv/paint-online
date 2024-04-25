@@ -4,12 +4,14 @@ interface ToolState {
   tool: CanvasRenderingContext2D | null
   toolWidth: number
   toolLineCap: 'square' | 'butt' | 'round'
+  toolColor: string
 }
 
 const initialState: ToolState = {
   tool: null,
-  toolWidth: 0,
+  toolWidth: 1,
   toolLineCap: 'square',
+  toolColor: 'black',
 }
 
 export const toolSlice = createSlice({
@@ -22,13 +24,10 @@ export const toolSlice = createSlice({
       state.tool!.lineCap = 'round'
       state.toolLineCap = state.tool!.lineCap
     },
-    setFillColor: (state, action: PayloadAction<string>) => {
+    setColor: (state, action: PayloadAction<string>) => {
       state.tool!.fillStyle = action.payload
       state.tool!.strokeStyle = action.payload
-    },
-    setStrokeColor: (state, action: PayloadAction<string>) => {
-      state.tool!.fillStyle = action.payload
-      state.tool!.strokeStyle = action.payload
+      state.toolColor = action.payload
     },
     setLineWidth: (state, action: PayloadAction<number>) => {
       state.tool!.lineWidth = action.payload
@@ -36,15 +35,10 @@ export const toolSlice = createSlice({
     },
     setLineCap: (state, action: PayloadAction<'square' | 'butt' | 'round'>) => {
       state.tool!.lineCap = action.payload
+      state.toolLineCap = action.payload
     },
   },
 })
 
-export const {
-  setTool,
-  setFillColor,
-  setStrokeColor,
-  setLineWidth,
-  setLineCap,
-} = toolSlice.actions
+export const { setTool, setColor, setLineWidth, setLineCap } = toolSlice.actions
 export default toolSlice.reducer

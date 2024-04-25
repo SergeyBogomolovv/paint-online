@@ -1,9 +1,8 @@
-import { MessageFigures } from '@/interfaces/draw-message'
+import { MessageFigures } from '@/interfaces/message-figures'
 import Tool from './tool'
 import { Socket } from 'socket.io-client'
 
 export default class Line extends Tool {
-  name: string
   currentX: number
   currentY: number
   x: number
@@ -12,20 +11,17 @@ export default class Line extends Tool {
   constructor(canvas: HTMLCanvasElement, socket: Socket) {
     super(canvas, socket)
     this.listen()
-    this.name = 'Line'
     this.currentX = 0
     this.currentY = 0
     this.x = 0
     this.y = 0
     this.saved = ''
   }
-
   listen() {
     this.canvas.onmousedown = this.mouseDownHandler.bind(this)
     this.canvas.onmouseup = this.mouseUpHandler.bind(this)
     this.canvas.onmousemove = this.mouseMoveHandler.bind(this)
   }
-
   mouseDownHandler(e: MouseEvent) {
     const { offsetX, offsetY } = e
     this.mouseDown = true

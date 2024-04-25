@@ -6,8 +6,8 @@ interface CanvasState {
   canvas: HTMLCanvasElement | null
   undoList: HTMLImageElement[]
   redoList: HTMLImageElement[]
-  username: string
   socket: Socket | null
+  username: string
   title: string
 }
 
@@ -39,10 +39,8 @@ export const canvasSlice = createSlice({
     pushToUndo: (state, action: PayloadAction<any>) => {
       state.undoList = [...state.undoList, action.payload]
     },
-    nullRedo: (state) => {
+    nullLists: (state) => {
       state.redoList = []
-    },
-    nullUndo: (state) => {
       state.undoList = []
     },
     undo: (state) => {
@@ -87,8 +85,7 @@ export const canvasSlice = createSlice({
 export const {
   setCanvas,
   pushToUndo,
-  nullRedo,
-  nullUndo,
+  nullLists,
   undo,
   redo,
   setUsername,

@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useNavigate } from 'react-router'
 import { useAppDispatch } from '@/hooks/redux'
-import { setUsername, setTitle } from '@/redux/slices/canvas-slice'
+import { setUsername, setTitle, setSocket } from '@/redux/slices/canvas-slice'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { EnterSchema } from '@/schemas'
@@ -23,6 +23,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { io } from 'socket.io-client'
 
 export default function EnterBoardForm() {
   const navigate = useNavigate()
@@ -32,7 +33,10 @@ export default function EnterBoardForm() {
     resolver: zodResolver(EnterSchema),
     defaultValues: { title: '', name: '' },
   })
+
   function onSubmit(values: z.infer<typeof EnterSchema>) {
+    const socket = io(`${import.meta.env.VITE_SERVER_URL}`)
+    dispatch(setSocket(socket))
     dispatch(setUsername(values.name))
     dispatch(setTitle(values.title))
     navigate(`/${values.title}`)
