@@ -3,21 +3,36 @@ import { useDraw } from './use-draw'
 import { toast } from 'sonner'
 import { useAppDispatch, useAppSelector } from './redux'
 import axios from 'axios'
-import { nullLists, pushToUndo } from '@/redux/slices/canvas-slice'
-import { ConnectionMessage } from '@/interfaces/connection-message'
+import {
+  nullLists,
+  pushToUndo,
+  removeConnectedUser,
+  setConnectedUsers,
+} from '@/redux/slices/canvas-slice'
 import { ConnectionResponse } from '@/interfaces/connection-response'
 import { undo, redo } from '@/redux/slices/canvas-slice'
+import { ConnectionMessage } from '@/interfaces/connection-message'
+import { DisconnectionMessage } from '@/interfaces/disconnection-message'
 
 export const useConnection = (socket: Socket) => {
   const dispatch = useAppDispatch()
   const { username, title, canvas } = useAppSelector((state) => state.canvas)
   const { draw, finish } = useDraw(socket)
+
   const listeners = [
+    {
+      event: 'disconnection',
+      action: (message: DisconnectionMessage) => {
+        dispatch(removeConnectedUser(message.id))
+        toast.success(`Пользователь ${message.name} отключился`)
+      },
+    },
     {
       event: 'connection',
       action: (message: ConnectionMessage) => {
         dispatch(nullLists())
-        toast.success(message.message)
+        dispatch(setConnectedUsers(message.users))
+        toast.success(`Пользователь ${message.name} подключился`)
       },
     },
     {
@@ -50,6 +65,9 @@ export const useConnection = (socket: Socket) => {
 
   return async () => {
     socket.emit('connection', { name: username, title: title })
+    listeners.forEach(({ event, action }) => {
+      socket.on(event, action)
+    })
     const { data: res } = await axios.get<ConnectionResponse>(
       `${import.meta.env.VITE_SERVER_URL}/drawing/${title}`
     )
@@ -60,9 +78,6 @@ export const useConnection = (socket: Socket) => {
       ctx?.clearRect(0, 0, canvas!.width, canvas!.height)
       ctx?.drawImage(img, 0, 0, canvas!.width, canvas!.height)
     }
-    listeners.forEach(({ event, action }) => {
-      socket.on(event, action)
-    })
     draw()
   }
 }

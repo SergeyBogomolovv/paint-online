@@ -1,3 +1,6 @@
+import { User } from './user'
+
 export interface ConnectionMessage {
-  message: string
+  name: string
+  users: User[]
 }

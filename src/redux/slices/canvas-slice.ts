@@ -1,3 +1,4 @@
+import { User } from '@/interfaces/user'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { Socket } from 'socket.io-client'
@@ -8,6 +9,7 @@ interface CanvasState {
   redoList: HTMLImageElement[]
   socket: Socket | null
   username: string
+  connectedUsers: User[]
   title: string
 }
 
@@ -18,12 +20,21 @@ const initialState: CanvasState = {
   undoList: [],
   redoList: [],
   socket: null,
+  connectedUsers: [],
 }
 
 export const canvasSlice = createSlice({
   name: 'canvas',
   initialState,
   reducers: {
+    setConnectedUsers: (state, action: PayloadAction<User[]>) => {
+      state.connectedUsers = action.payload
+    },
+    removeConnectedUser: (state, action: PayloadAction<string>) => {
+      state.connectedUsers = state.connectedUsers.filter(
+        (user) => user.id !== action.payload
+      )
+    },
     setUsername: (state, action: PayloadAction<string>) => {
       state.username = action.payload
     },
@@ -84,6 +95,8 @@ export const canvasSlice = createSlice({
 
 export const {
   setCanvas,
+  removeConnectedUser,
+  setConnectedUsers,
   pushToUndo,
   nullLists,
   undo,
