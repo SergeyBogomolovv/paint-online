@@ -1,5 +1,5 @@
 import { useAppSelector } from '@/hooks/redux'
-import { MessageFigures } from '@/interfaces/message-figures'
+import { Figures } from '@/schemas/figures'
 import Brush from '@/tools/brush'
 import Circle from '@/tools/circle'
 import Eraser from '@/tools/eraser'
@@ -21,13 +21,12 @@ export const useDraw = (socket: Socket) => {
         const prevColor = canvas?.getContext('2d')?.fillStyle
         const prevlineWidth = canvas?.getContext('2d')?.lineWidth
         const prevlineCap = canvas?.getContext('2d')?.lineCap
-        if (figure === MessageFigures.brush) Brush.draw({ ctx: ctx!, ...res })
-        if (figure === MessageFigures.circle)
+        if (figure === Figures.Enum.brush) Brush.draw({ ctx: ctx!, ...res })
+        if (figure === Figures.Enum.circle)
           Circle.drawCircle({ ctx: ctx!, ...res })
-        if (figure === MessageFigures.eraser)
-          Eraser.erase({ ctx: ctx!, ...res })
-        if (figure === MessageFigures.rect) Rect.drawRect({ ctx: ctx!, ...res })
-        if (figure === MessageFigures.line) Line.drawLine({ ctx: ctx!, ...res })
+        if (figure === Figures.Enum.eraser) Eraser.erase({ ctx: ctx!, ...res })
+        if (figure === Figures.Enum.rect) Rect.drawRect({ ctx: ctx!, ...res })
+        if (figure === Figures.Enum.line) Line.drawLine({ ctx: ctx!, ...res })
         ctx!.lineWidth = prevlineWidth!
         ctx!.fillStyle = prevColor!
         ctx!.strokeStyle = prevColor!

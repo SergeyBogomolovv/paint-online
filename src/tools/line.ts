@@ -1,4 +1,4 @@
-import { MessageFigures } from '@/interfaces/message-figures'
+import { Figures } from '@/schemas/figures'
 import Tool from './tool'
 import { Socket } from 'socket.io-client'
 
@@ -34,7 +34,7 @@ export default class Line extends Tool {
   mouseUpHandler() {
     this.mouseDown = false
     this.socket.emit('draw', {
-      type: MessageFigures.line,
+      type: Figures.Enum.line,
       figure: {
         x: this.x,
         y: this.y,

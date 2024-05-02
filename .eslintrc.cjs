@@ -20,5 +20,6 @@ module.exports = {
     'prefer-const': 'error',
     semi: ['error', 'never'],
     'react-hooks/exhaustive-deps': 'off',
+    'no-var': 'error',
   },
 }

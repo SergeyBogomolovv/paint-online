@@ -1,7 +1,8 @@
-import { User } from '@/interfaces/user'
+import { UserSchema } from '@/schemas/user'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { Socket } from 'socket.io-client'
+import { z } from 'zod'
 
 interface CanvasState {
   canvas: HTMLCanvasElement | null
@@ -9,7 +10,7 @@ interface CanvasState {
   redoList: HTMLImageElement[]
   socket: Socket | null
   username: string
-  connectedUsers: User[]
+  connectedUsers: z.infer<typeof UserSchema>[]
   title: string
 }
 
@@ -27,12 +28,15 @@ export const canvasSlice = createSlice({
   name: 'canvas',
   initialState,
   reducers: {
-    setConnectedUsers: (state, action: PayloadAction<User[]>) => {
+    setConnectedUsers: (
+      state,
+      action: PayloadAction<z.infer<typeof UserSchema>[]>,
+    ) => {
       state.connectedUsers = action.payload
     },
     removeConnectedUser: (state, action: PayloadAction<string>) => {
       state.connectedUsers = state.connectedUsers.filter(
-        (user) => user.id !== action.payload
+        (user) => user.id !== action.payload,
       )
     },
     setUsername: (state, action: PayloadAction<string>) => {

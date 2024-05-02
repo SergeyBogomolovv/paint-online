@@ -22,7 +22,7 @@ export default function Canvas() {
       dispatch(setTool(new Brush(canvas, socket)))
     }
   }, [canvas])
-
+  var gerax = 'df'
   return (
     <canvas
       onMouseUp={() => {

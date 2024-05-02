@@ -13,7 +13,7 @@ import { useAppDispatch } from '@/hooks/redux'
 import { setUsername, setTitle, setSocket } from '@/redux/slices/canvas-slice'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
-import { EnterSchema } from '@/schemas'
+import { EnterSchema } from '@/schemas/enter'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Form,

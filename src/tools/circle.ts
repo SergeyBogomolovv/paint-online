@@ -1,4 +1,4 @@
-import { MessageFigures } from '@/interfaces/message-figures'
+import { Figures } from '@/schemas/figures'
 import Tool from './tool'
 import { Socket } from 'socket.io-client'
 export default class Circle extends Tool {
@@ -31,7 +31,7 @@ export default class Circle extends Tool {
   mouseUpHandler() {
     this.mouseDown = false
     this.socket.emit('draw', {
-      type: MessageFigures.circle,
+      type: Figures.Enum.circle,
       figure: {
         x: this.startX,
         y: this.startY,
